@@ -1,3 +1,4 @@
+TOP=..
 GPP=g++
 CFLAGS= 
 DEBUG=-Wall -g -DDEBUG
@@ -7,8 +8,8 @@ BUILD=build/
 
 all: sub_nav control
 
-RoverACH.o: RoverACH/RoverACH.hpp RoverACH/RoverACH.cpp
-	$(GPP) $(CFLAGS) -c RoverACH/RoverACH.cpp -o $(BUILD)$@ -lach
+RoverACH.o: $(TOP)/RoverACH/RoverACH.hpp $(TOP)/RoverACH/RoverACH.cpp
+	$(GPP) $(CFLAGS) -c $(TOP)/RoverACH/RoverACH.cpp -o $(BUILD)$@ -lach
 
 bmp180.o: navigation/BBB_BMP180/Adafruit_BMP180.hpp navigation/BBB_BMP180/Adafruit_BMP180.cpp
 	$(GPP) $(CFLAGS) -c navigation/BBB_BMP180/Adafruit_BMP180.cpp -o $(BUILD)$@

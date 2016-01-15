@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h> //umask()
-#include "../RoverACH/RoverACH.hpp"
+#include "../../RoverACH/RoverACH.hpp"
 #include "BBB_BMP180/Adafruit_BMP180.hpp"
 #include "BBB_L3GD20/Adafruit_L3GD20.hpp"
 #include "BBB_LSM303/Adafruit_LSM303.h"
@@ -69,12 +69,12 @@ int main( int argc, char** argv ) {
         exit(EXIT_FAILURE);
     }
     
-    nav_data->chnl.open( nav_data->opt_chan_name );
+    nav_data->chnl->open( nav_data->opt_chan_name );
 
 	fprintf(fp_log, "Setting up sensor BMP180...");
 	fflush(fp_log);
     Adafruit_BMP180 BMP180(1,0x77);
-    if( BMP180.begin() == false){
+    if( BMP180.begin(BMP180_MODE_HIGHRES) == false){
             fprintf(fp_log,"Could not find a valid BMP180!\n");
 			fflush(fp_log);
             return 0;

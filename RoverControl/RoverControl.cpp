@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <inttypes.h>
-#include "../RoverACH/RoverACH.hpp"
+#include "../../RoverACH/RoverACH.hpp"
 
 using namespace rover;
 using namespace std;
@@ -35,7 +35,7 @@ int main( int argc, char **argv ) {
 	nav_data->fin = stdin;
 	nav_data->fout = stdout;
 
-	nav_data->chnl.open( nav_data->opt_chan_name );
+	nav_data->chnl->open( nav_data->opt_chan_name );
 
 	nav_data->subscribe();
 
