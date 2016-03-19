@@ -19,7 +19,6 @@ using namespace std;
 using namespace rover;
 
 int main( int argc, char** argv ) {
-/*
 	// fork()
 	int res = fork();
 
@@ -32,22 +31,24 @@ int main( int argc, char** argv ) {
 		exit(0);
 	} 
 
+	FILE* fp_log = fopen("/home/cwick/rover/logs/nav_log.txt", "w+");
+	if( fp_log == NULL ){
+		cerr<<"Could not open log file"<<endl;
+		return -1;
+	}
+
+	fprintf(fp_log, "Starting navigation daemon...\n");
 	umask(0);
 	int sid = setsid();
 	if( sid < 0 ){
 		fprintf(fp_log, "Failed to set SID. Exiting\n");
 		exit(1);
 	}
+
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
 	close(STDERR_FILENO);
-*/
-	FILE* fp_log = fopen("/home/cwick/rover/logs/nav_log.txt", "w+");
-	if( fp_log == NULL ){
-		cerr<<"Could not open log file"<<endl;
-		return -1;
-	}
-	fprintf(fp_log, "Starting navigation daemon...\n");
+
 	fflush(fp_log);
 
 	// open nav data channel
@@ -73,6 +74,7 @@ int main( int argc, char** argv ) {
     Adafruit_BMP180 BMP180(1,0x77);
     if( BMP180.begin() == false){
             fprintf(fp_log,"Could not find a valid BMP180!\n");
+			fflush(fp_log);
             return 0;
     }
 
