@@ -11,6 +11,8 @@
 #include <sys/stat.h> //umask()
 #include "../RoverACH/RoverACH.hpp"
 #include "BBB_BMP180/Adafruit_BMP180.hpp"
+#include "BBB_L3GD20/Adafruit_L3GD20.hpp"
+//#include "BBB_LSM303/Adafruit_LSM303.hpp"
 
 #define BUFF_SIZE 4096
 #define NUM_SIZE 128
@@ -82,25 +84,101 @@ int main( int argc, char** argv ) {
     float* pressure = (float*)calloc(1, sizeof(float));
     char num_buff[NUM_SIZE];
   
+	fprintf(fp_log, "Setting up sensor L3GD20...");
+	Adafruit_L3GD20 L3GD20(1);
+	if( L3GD20.begin() == false)
+	{
+		fprintf(fp_log, "Could not find a valid L3GD20!\n");
+		return 0;
+	}
+	float gyro_x = 0.0;
+	float gyro_y = 0.0;
+	float gyro_z = 0.0;
+    int  millisec = 500;
+    struct timespec rec = {0};
+    rec.tv_sec = 0;
+    rec.tv_nsec = millisec * 1000000L;
+/*
+	fprintf(fp_log, "Setting up sensor LSM303...");
+	Adafruit_LSM303 LSM303(1);
+	if( LSM303.begin() == false)
+	{
+		fprintf(fp_log, "Could not find a valid LSM303!\n");
+		return 0;
+	}
+	float mag_x = 0.0;
+	float mag_y = 0.0;
+	float mag_z = 0.0;
+	float acc_x = 0.0;
+	float acc_y = 0.0;
+	float acc_z = 0.0;
+
+	LSM303.getOrientation(&mag_x, &mag_y, &mag_z);
+*/	
+
 	// TODO: add condition to check that RoverControl process hasn't sent a stop signal 
 	// Continually publish sensor readings to channel
 	fprintf(fp_log, "Begin publishing sensor data...");
+	fflush(fp_log);
 	while(1){ 
 		BMP180.getTemperature(temp);
 		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, "T: ", BUFF_SIZE);
+		strncpy(nav_data->pbuffer, ">T: ", BUFF_SIZE);
 		snprintf(num_buff, NUM_SIZE, "%f", *temp);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
 		nav_data->publish();
         
         BMP180.getPressure(pressure);
 		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, "P: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f\n", *pressure);
+		strncpy(nav_data->pbuffer, ">P: ", BUFF_SIZE);
+		snprintf(num_buff, NUM_SIZE, "%f", *pressure);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+		nav_data->publish();
 
+		L3GD20.readGyro(&gyro_x, &gyro_y, &gyro_z);
+		memset(num_buff, 0, NUM_SIZE);
+		strncpy(nav_data->pbuffer, ">gyroX: ", BUFF_SIZE);
+		snprintf(num_buff, NUM_SIZE, "%f", gyro_x);
+		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+		nav_data->publish();
+
+		memset(num_buff, 0, NUM_SIZE);
+		strncpy(nav_data->pbuffer, ">gyroY: ", BUFF_SIZE);
+		snprintf(num_buff, NUM_SIZE, "%f", gyro_y);
+		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+		nav_data->publish();
+		
+		memset(num_buff, 0, NUM_SIZE);
+		strncpy(nav_data->pbuffer, ">gyroZ: ", BUFF_SIZE);
+		snprintf(num_buff, NUM_SIZE, "%f", gyro_z);
+		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+		nav_data->publish();
+/*		LSM303 hasn't been updated to use mraa 
+		LSM303.getAcceleration(&acc_x, &acc_y, &acc_z);
+		memset(num_buff, 0, NUM_SIZE);
+		strncpy(nav_data->pbuffer, ">accX: ", BUFF_SIZE);
+		snprintf(num_buff, NUM_SIZE, "%f", acc_z);
+		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+		nav_data->publish();
+
+		memset(num_buff, 0, NUM_SIZE);
+		strncpy(nav_data->pbuffer, ">accY: ", BUFF_SIZE);
+		snprintf(num_buff, NUM_SIZE, "%f", acc_y);
+		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+		nav_data->publish();
+
+		memset(num_buff, 0, NUM_SIZE);
+		strncpy(nav_data->pbuffer, ">accZ: ", BUFF_SIZE);
+		snprintf(num_buff, NUM_SIZE, "%f", acc_z);
+		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+		nav_data->publish();
+*/
+		strncat(nav_data->pbuffer, "\n", BUFF_SIZE);
+    	nanosleep(&rec, (struct timespec *) NULL);
 		nav_data->publish();
 	}
 	// free alloced memory before terminating
+	L3GD20.cleanup();
+//	LSM303.cleanup();
     return 0;
 }
