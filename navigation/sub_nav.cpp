@@ -12,7 +12,7 @@
 #include "../RoverACH/RoverACH.hpp"
 #include "BBB_BMP180/Adafruit_BMP180.hpp"
 #include "BBB_L3GD20/Adafruit_L3GD20.hpp"
-//#include "BBB_LSM303/Adafruit_LSM303.hpp"
+#include "BBB_LSM303/Adafruit_LSM303.h"
 
 #define BUFF_SIZE 4096
 #define NUM_SIZE 128
@@ -98,12 +98,12 @@ int main( int argc, char** argv ) {
     struct timespec rec = {0};
     rec.tv_sec = 0;
     rec.tv_nsec = millisec * 1000000L;
-/*
+
 	fprintf(fp_log, "Setting up sensor LSM303...");
 	Adafruit_LSM303 LSM303(1);
 	if( LSM303.begin() == false)
 	{
-		fprintf(fp_log, "Could not find a valid LSM303!\n");
+		fprintf(fp_log, "Error setting up LSM303!\n");
 		return 0;
 	}
 	float mag_x = 0.0;
@@ -113,10 +113,9 @@ int main( int argc, char** argv ) {
 	float acc_y = 0.0;
 	float acc_z = 0.0;
 
-	LSM303.getOrientation(&mag_x, &mag_y, &mag_z);
-*/	
+	LSM303.getOrientation( &mag_x, &mag_y, &mag_z );
 
-	// TODO: add condition to check that RoverControl process hasn't sent a stop signal 
+	// TODO: add while condition to check that RoverControl process hasn't sent a stop signal 
 	// Continually publish sensor readings to channel
 	fprintf(fp_log, "Begin publishing sensor data...");
 	fflush(fp_log);
@@ -153,11 +152,11 @@ int main( int argc, char** argv ) {
 		snprintf(num_buff, NUM_SIZE, "%f", gyro_z);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
 		nav_data->publish();
-/*		LSM303 hasn't been updated to use mraa 
+
 		LSM303.getAcceleration(&acc_x, &acc_y, &acc_z);
 		memset(num_buff, 0, NUM_SIZE);
 		strncpy(nav_data->pbuffer, ">accX: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f", acc_z);
+		snprintf(num_buff, NUM_SIZE, "%f", acc_x);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
 		nav_data->publish();
 
@@ -172,7 +171,26 @@ int main( int argc, char** argv ) {
 		snprintf(num_buff, NUM_SIZE, "%f", acc_z);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
 		nav_data->publish();
-*/
+
+		LSM303.getOrientation( &mag_x, &mag_y, &mag_z );
+		memset(num_buff, 0, NUM_SIZE);
+		strncpy(nav_data->pbuffer, ">magX: ", BUFF_SIZE);
+		snprintf(num_buff, NUM_SIZE, "%f", mag_x);
+		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+		nav_data->publish();
+
+		memset(num_buff, 0, NUM_SIZE);
+		strncpy(nav_data->pbuffer, ">magY: ", BUFF_SIZE);
+		snprintf(num_buff, NUM_SIZE, "%f", mag_y);
+		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+		nav_data->publish();
+
+		memset(num_buff, 0, NUM_SIZE);
+		strncpy(nav_data->pbuffer, ">magZ: ", BUFF_SIZE);
+		snprintf(num_buff, NUM_SIZE, "%f", mag_z);
+		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+		nav_data->publish();
+
 		strncat(nav_data->pbuffer, "\n", BUFF_SIZE);
     	nanosleep(&rec, (struct timespec *) NULL);
 		nav_data->publish();
