@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h> //umask()
+#include <time.h>
 #include "../../RoverACH/RoverACH.hpp"
 #include "BBB_BMP180/Adafruit_BMP180.hpp"
 #include "BBB_L3GD20/Adafruit_L3GD20.hpp"
@@ -33,12 +34,17 @@ int main( int argc, char** argv ) {
 		exit(0);
 	} 
 
-	FILE* fp_log = fopen("/home/cwick/rover/logs/nav_log.txt", "w+");
+	FILE* fp_log = fopen("/var/log/rover_logs/nav_log.txt", "a+");
 	if( fp_log == NULL ){
 		cerr<<"Could not open log file"<<endl;
 		return -1;
 	}
 
+	time_t rawtime;
+
+	time( &rawtime );
+
+	fprintf(fp_log,"\n****************************************RoverControl\n****************************************%s", ctime(&rawtime));
 	fprintf(fp_log, "Starting navigation daemon...\n");
 	umask(0);
 	int sid = setsid();
@@ -54,8 +60,6 @@ int main( int argc, char** argv ) {
 	fflush(fp_log);
 
 	// open nav data channel
-	fprintf(fp_log, "Opening nav_data channel.\n");
-	fflush(fp_log);
 	RoverACH* nav_data = new RoverACH();
 
     nav_data->opt_sub = 0;
@@ -68,12 +72,19 @@ int main( int argc, char** argv ) {
         fprintf(fp_log, "Error: cannot publish and subscribe\n");
         exit(EXIT_FAILURE);
     }
-    
-    nav_data->chnl->open( nav_data->opt_chan_name );
+
+	fprintf(fp_log, "Opening %s channel.\n", nav_data->opt_chan_name);
+	fflush(fp_log);
+	enum ach_status r = nav_data->chnl->open( nav_data->opt_chan_name );
+	if(ACH_OK != r ) {
+        fprintf(fp_log, "Could no open channel: %s\n", ach_result_to_string(r));
+        fflush(fp_log);
+        exit(EXIT_FAILURE);
+	}
 
 	fprintf(fp_log, "Setting up sensor BMP180...");
 	fflush(fp_log);
-    Adafruit_BMP180 BMP180(1,0x77);
+    Adafruit_BMP180 BMP180(2,0x77);
     if( BMP180.begin(BMP180_MODE_HIGHRES) == false){
             fprintf(fp_log,"Could not find a valid BMP180!\n");
 			fflush(fp_log);
@@ -85,7 +96,7 @@ int main( int argc, char** argv ) {
     char num_buff[NUM_SIZE];
   
 	fprintf(fp_log, "Setting up sensor L3GD20...");
-	Adafruit_L3GD20 L3GD20(1);
+	Adafruit_L3GD20 L3GD20(2);
 	if( L3GD20.begin() == false)
 	{
 		fprintf(fp_log, "Could not find a valid L3GD20!\n");
@@ -100,7 +111,7 @@ int main( int argc, char** argv ) {
     rec.tv_nsec = millisec * 1000000L;
 
 	fprintf(fp_log, "Setting up sensor LSM303...");
-	Adafruit_LSM303 LSM303(1);
+	Adafruit_LSM303 LSM303(2);
 	if( LSM303.begin() == false)
 	{
 		fprintf(fp_log, "Error setting up LSM303!\n");
