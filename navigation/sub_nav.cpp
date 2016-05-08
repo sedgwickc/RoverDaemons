@@ -75,14 +75,37 @@ int main( int argc, char** argv ) {
 
 	fprintf(fp_log, "Opening %s channel.\n", nav_data->opt_chan_name);
 	fflush(fp_log);
-	enum ach_status r = nav_data->chnl->open( nav_data->opt_chan_name );
-	if(ACH_OK != r ) {
-        fprintf(fp_log, "Could no open channel: %s\n", ach_result_to_string(r));
+	enum ach_status retval = nav_data->chnl->open( nav_data->opt_chan_name );
+	if(ACH_OK != retval ) {
+        fprintf(fp_log, "Could no open channel: %s\n", ach_result_to_string(retval));
         fflush(fp_log);
         exit(EXIT_FAILURE);
 	}
 
-	fprintf(fp_log, "Setting up sensor BMP180...");
+	// open nav cmd channel
+	RoverACH* nav_cmd = new RoverACH();
+
+    nav_cmd->opt_sub = 0;
+    nav_cmd->opt_pub = 1;
+    strncpy(nav_cmd->opt_chan_name, "nav_cmd", NAME_SIZE);
+    nav_cmd->fin = stdin;
+    nav_cmd->fout = stdout;
+
+    if(  nav_cmd->opt_sub == 1 && nav_cmd->opt_pub ==  nav_cmd->opt_sub ) {
+        fprintf(fp_log, "Error: cannot publish and subscribe\n");
+        exit(EXIT_FAILURE);
+    }
+
+	fprintf(fp_log, "Opening %s channel.\n", nav_cmd->opt_chan_name);
+	fflush(fp_log);
+	retval = nav_cmd->chnl->open( nav_cmd->opt_chan_name );
+	if(ACH_OK != retval ) {
+        fprintf(fp_log, "Could no open channel: %s\n", ach_result_to_string(retval));
+        fflush(fp_log);
+        exit(EXIT_FAILURE);
+	}
+
+	fprintf(fp_log, "Setting up sensor BMP180...\n");
 	fflush(fp_log);
     Adafruit_BMP180 BMP180(2,0x77);
     if( BMP180.begin(BMP180_MODE_HIGHRES) == false){
@@ -95,7 +118,7 @@ int main( int argc, char** argv ) {
     float* pressure = (float*)calloc(1, sizeof(float));
     char num_buff[NUM_SIZE];
   
-	fprintf(fp_log, "Setting up sensor L3GD20...");
+	fprintf(fp_log, "Setting up sensor L3GD20...\n");
 	Adafruit_L3GD20 L3GD20(2);
 	if( L3GD20.begin() == false)
 	{
@@ -110,7 +133,7 @@ int main( int argc, char** argv ) {
     rec.tv_sec = 0;
     rec.tv_nsec = millisec * 1000000L;
 
-	fprintf(fp_log, "Setting up sensor LSM303...");
+	fprintf(fp_log, "Setting up sensor LSM303...\n");
 	Adafruit_LSM303 LSM303(2);
 	if( LSM303.begin() == false)
 	{
@@ -128,9 +151,13 @@ int main( int argc, char** argv ) {
 
 	// TODO: add while condition to check that RoverControl process hasn't sent a stop signal 
 	// Continually publish sensor readings to channel
-	fprintf(fp_log, "Begin publishing sensor data...");
+	fprintf(fp_log, "Begin publishing sensor data...\n");
 	fflush(fp_log);
-	while(1){ 
+    int t0 = 1;
+    size_t frame_size = 0;
+    size_t fr;
+    char buf[PBUFF_SIZE] = "";
+	while( strncmp( buf, "nav_stop", PBUFF_SIZE) != 0 ){ 
 		BMP180.getTemperature(temp);
 		memset(num_buff, 0, NUM_SIZE);
 		strncpy(nav_data->pbuffer, ">T: ", BUFF_SIZE);
@@ -205,6 +232,24 @@ int main( int argc, char** argv ) {
 		strncat(nav_data->pbuffer, "\n", BUFF_SIZE);
     	nanosleep(&rec, (struct timespec *) NULL);
 		nav_data->publish();
+
+        retval = nav_cmd->chnl->get ( &buf, 0, &frame_size, NULL, 0,
+                         ACH_MASK_OK | ACH_MASK_STALE_FRAMES, ACH_MASK_MISSED_FRAME );
+        if( ACH_OK != retval )  {
+            fprintf(fp_log, "sub_nav: ach_error: %s\n", ach_result_to_string(retval));
+            if( ACH_STALE_FRAMES == retval ) {
+                usleep(1000);
+            } else {
+                if( ! (t0 && retval == ACH_MISSED_FRAME) )
+                    if( ACH_CLOSED != retval ) {
+                        fprintf(stderr, "sub: ach_error: %s\n",
+                                ach_result_to_string(retval));
+                    }
+                if( !  ( ACH_MISSED_FRAME == retval ||
+                         ACH_STALE_FRAMES == retval ) ) break;
+            }
+
+        }
 	}
 	// free alloced memory before terminating
 	L3GD20.cleanup();
