@@ -163,76 +163,76 @@ int main( int argc, char** argv ) {
 		strncpy(nav_data->pbuffer, ">T: ", BUFF_SIZE);
 		snprintf(num_buff, NUM_SIZE, "%f", *temp);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		nav_data->publish();
+		//nav_data->publish();
         
         BMP180.getPressure(pressure);
 		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, ">P: ", BUFF_SIZE);
+		strncat(nav_data->pbuffer, ">P: ", BUFF_SIZE);
 		snprintf(num_buff, NUM_SIZE, "%f", *pressure);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		nav_data->publish();
+		//nav_data->publish();
 
 		L3GD20.readGyro(&gyro_x, &gyro_y, &gyro_z);
 		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, ">gyroX: ", BUFF_SIZE);
+		strncat(nav_data->pbuffer, ">gyroX: ", BUFF_SIZE);
 		snprintf(num_buff, NUM_SIZE, "%f", gyro_x);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		nav_data->publish();
+		//nav_data->publish();
 
 		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, ">gyroY: ", BUFF_SIZE);
+		strncat(nav_data->pbuffer, ">gyroY: ", BUFF_SIZE);
 		snprintf(num_buff, NUM_SIZE, "%f", gyro_y);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		nav_data->publish();
+		//nav_data->publish();
 		
 		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, ">gyroZ: ", BUFF_SIZE);
+		strncat(nav_data->pbuffer, ">gyroZ: ", BUFF_SIZE);
 		snprintf(num_buff, NUM_SIZE, "%f", gyro_z);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		nav_data->publish();
+		//nav_data->publish();
 
 		LSM303.getAcceleration(&acc_x, &acc_y, &acc_z);
 		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, ">accX: ", BUFF_SIZE);
+		strncat(nav_data->pbuffer, ">accX: ", BUFF_SIZE);
 		snprintf(num_buff, NUM_SIZE, "%f", acc_x);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		nav_data->publish();
+		//nav_data->publish();
 
 		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, ">accY: ", BUFF_SIZE);
+		strncat(nav_data->pbuffer, ">accY: ", BUFF_SIZE);
 		snprintf(num_buff, NUM_SIZE, "%f", acc_y);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		nav_data->publish();
+		//nav_data->publish();
 
 		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, ">accZ: ", BUFF_SIZE);
+		strncat(nav_data->pbuffer, ">accZ: ", BUFF_SIZE);
 		snprintf(num_buff, NUM_SIZE, "%f", acc_z);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		nav_data->publish();
+		//nav_data->publish();
 
 		LSM303.getOrientation( &mag_x, &mag_y, &mag_z );
 		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, ">magX: ", BUFF_SIZE);
+		strncat(nav_data->pbuffer, ">magX: ", BUFF_SIZE);
 		snprintf(num_buff, NUM_SIZE, "%f", mag_x);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		nav_data->publish();
+		//nav_data->publish();
 
 		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, ">magY: ", BUFF_SIZE);
+		strncat(nav_data->pbuffer, ">magY: ", BUFF_SIZE);
 		snprintf(num_buff, NUM_SIZE, "%f", mag_y);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		nav_data->publish();
+		//nav_data->publish();
 
 		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, ">magZ: ", BUFF_SIZE);
+		strncat(nav_data->pbuffer, ">magZ: ", BUFF_SIZE);
 		snprintf(num_buff, NUM_SIZE, "%f", mag_z);
 		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		nav_data->publish();
+		//nav_data->publish();
 
 		strncat(nav_data->pbuffer, "\n", BUFF_SIZE);
     	nanosleep(&rec, (struct timespec *) NULL);
 		nav_data->publish();
-
+/*
         retval = nav_cmd->chnl->get ( &buf, 0, &frame_size, NULL, 0,
                          ACH_MASK_OK | ACH_MASK_STALE_FRAMES, ACH_MASK_MISSED_FRAME );
         if( ACH_OK != retval )  {
@@ -249,7 +249,7 @@ int main( int argc, char** argv ) {
                          ACH_STALE_FRAMES == retval ) ) break;
             }
 
-        }
+        }*/
 	}
 	// free alloced memory before terminating
 	L3GD20.cleanup();
