@@ -19,7 +19,16 @@ namespace rover {
 #define PIN_COUNT 4
 #define HIGH 1
 #define LOW 0
-// define/declare default pins
+/* define/declare default pin */
+#define AIN1_LEFT_PIN 38
+#define AIN2_LEFT_PIN 37
+#define BIN1_LEFT_PIN 36
+#define BIN2_LEFT_PIN 34
+#define AIN1_LEFT_INDX 2
+#define AIN2_LEFT_INDX 3
+#define BIN1_LEFT_INDX 1
+#define BIN2_LEFT_INDX 0
+
 
 class MotorControl
 {

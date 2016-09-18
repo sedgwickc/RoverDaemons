@@ -27,6 +27,8 @@ int main( int argc, char** argv ) {
 		return 0;
 	}
 
+    /* create MotorControl object and pass null to have it set up default pins
+     */
 	MotorControl* mc = new MotorControl(NULL,NULL);
 	// open drive_data channel 
 

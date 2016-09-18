@@ -17,6 +17,7 @@
 
 #define BUFF_SIZE 4096
 #define NUM_SIZE 128
+#define BUSNUM 0
 
 using namespace std;
 using namespace rover;
@@ -24,6 +25,9 @@ using namespace rover;
 int main( int argc, char** argv ) {
 	// fork()
 	int res = fork();
+	bool bmp180 = false;
+	bool l3gd20 = false;
+	bool lsm303 = false;
 
 	// check PID
 	if ( res < 0 ){
@@ -107,11 +111,11 @@ int main( int argc, char** argv ) {
 
 	fprintf(fp_log, "Setting up sensor BMP180...\n");
 	fflush(fp_log);
-    Adafruit_BMP180 BMP180(2,0x77);
+    Adafruit_BMP180 BMP180(BUSNUM,0x77);
     if( BMP180.begin(BMP180_MODE_HIGHRES) == false){
             fprintf(fp_log,"Could not find a valid BMP180!\n");
 			fflush(fp_log);
-            return 0;
+			bmp180 = true;
     }
 
     float* temp = (float*)calloc(1,sizeof(float));
@@ -119,11 +123,11 @@ int main( int argc, char** argv ) {
     char num_buff[NUM_SIZE];
   
 	fprintf(fp_log, "Setting up sensor L3GD20...\n");
-	Adafruit_L3GD20 L3GD20(2);
+	Adafruit_L3GD20 L3GD20(BUSNUM);
 	if( L3GD20.begin() == false)
 	{
 		fprintf(fp_log, "Could not find a valid L3GD20!\n");
-		return 0;
+		l3gd20 = true;
 	}
 	float gyro_x = 0.0;
 	float gyro_y = 0.0;
@@ -134,11 +138,11 @@ int main( int argc, char** argv ) {
     rec.tv_nsec = millisec * 1000000L;
 
 	fprintf(fp_log, "Setting up sensor LSM303...\n");
-	Adafruit_LSM303 LSM303(2);
+	Adafruit_LSM303 LSM303(BUSNUM);
 	if( LSM303.begin() == false)
 	{
 		fprintf(fp_log, "Error setting up LSM303!\n");
-		return 0;
+		lsm303 = true;
 	}
 	float mag_x = 0.0;
 	float mag_y = 0.0;
@@ -158,76 +162,83 @@ int main( int argc, char** argv ) {
     size_t fr;
     char buf[PBUFF_SIZE] = "";
 	while( strncmp( buf, "nav_stop", PBUFF_SIZE) != 0 ){ 
-		BMP180.getTemperature(temp);
-		memset(num_buff, 0, NUM_SIZE);
-		strncpy(nav_data->pbuffer, ">T: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f", *temp);
-		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		//nav_data->publish();
+	    if( bmp180 == true ){
+			BMP180.getTemperature(temp);
+			memset(num_buff, 0, NUM_SIZE);
+			strncpy(nav_data->pbuffer, ">T: ", BUFF_SIZE);
+			snprintf(num_buff, NUM_SIZE, "%f", *temp);
+			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			//nav_data->publish();
         
-        BMP180.getPressure(pressure);
-		memset(num_buff, 0, NUM_SIZE);
-		strncat(nav_data->pbuffer, ">P: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f", *pressure);
-		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		//nav_data->publish();
+        	BMP180.getPressure(pressure);
+			memset(num_buff, 0, NUM_SIZE);
+			strncat(nav_data->pbuffer, ">P: ", BUFF_SIZE);
+			snprintf(num_buff, NUM_SIZE, "%f", *pressure);
+			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			//nav_data->publish();
+		}
 
-		L3GD20.readGyro(&gyro_x, &gyro_y, &gyro_z);
-		memset(num_buff, 0, NUM_SIZE);
-		strncat(nav_data->pbuffer, ">gyroX: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f", gyro_x);
-		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		//nav_data->publish();
+        if( l3gd20 == true ){
+			L3GD20.readGyro(&gyro_x, &gyro_y, &gyro_z);
+			memset(num_buff, 0, NUM_SIZE);
+			strncat(nav_data->pbuffer, ">gyroX: ", BUFF_SIZE);
+			snprintf(num_buff, NUM_SIZE, "%f", gyro_x);
+			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			//nav_data->publish();
 
-		memset(num_buff, 0, NUM_SIZE);
-		strncat(nav_data->pbuffer, ">gyroY: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f", gyro_y);
-		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		//nav_data->publish();
-		
-		memset(num_buff, 0, NUM_SIZE);
-		strncat(nav_data->pbuffer, ">gyroZ: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f", gyro_z);
-		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		//nav_data->publish();
+			memset(num_buff, 0, NUM_SIZE);
+			strncat(nav_data->pbuffer, ">gyroY: ", BUFF_SIZE);
+			snprintf(num_buff, NUM_SIZE, "%f", gyro_y);
+			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			//nav_data->publish();
+			
+			memset(num_buff, 0, NUM_SIZE);
+			strncat(nav_data->pbuffer, ">gyroZ: ", BUFF_SIZE);
+			snprintf(num_buff, NUM_SIZE, "%f", gyro_z);
+			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			//nav_data->publish();
+		}
 
-		LSM303.getAcceleration(&acc_x, &acc_y, &acc_z);
-		memset(num_buff, 0, NUM_SIZE);
-		strncat(nav_data->pbuffer, ">accX: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f", acc_x);
-		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		//nav_data->publish();
+		if( lsm303 == true ){
 
-		memset(num_buff, 0, NUM_SIZE);
-		strncat(nav_data->pbuffer, ">accY: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f", acc_y);
-		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		//nav_data->publish();
+			LSM303.getAcceleration(&acc_x, &acc_y, &acc_z);
+			memset(num_buff, 0, NUM_SIZE);
+			strncat(nav_data->pbuffer, ">accX: ", BUFF_SIZE);
+			snprintf(num_buff, NUM_SIZE, "%f", acc_x);
+			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			//nav_data->publish();
 
-		memset(num_buff, 0, NUM_SIZE);
-		strncat(nav_data->pbuffer, ">accZ: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f", acc_z);
-		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		//nav_data->publish();
+			memset(num_buff, 0, NUM_SIZE);
+			strncat(nav_data->pbuffer, ">accY: ", BUFF_SIZE);
+			snprintf(num_buff, NUM_SIZE, "%f", acc_y);
+			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			//nav_data->publish();
 
-		LSM303.getOrientation( &mag_x, &mag_y, &mag_z );
-		memset(num_buff, 0, NUM_SIZE);
-		strncat(nav_data->pbuffer, ">magX: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f", mag_x);
-		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		//nav_data->publish();
+			memset(num_buff, 0, NUM_SIZE);
+			strncat(nav_data->pbuffer, ">accZ: ", BUFF_SIZE);
+			snprintf(num_buff, NUM_SIZE, "%f", acc_z);
+			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			//nav_data->publish();
 
-		memset(num_buff, 0, NUM_SIZE);
-		strncat(nav_data->pbuffer, ">magY: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f", mag_y);
-		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		//nav_data->publish();
+			LSM303.getOrientation( &mag_x, &mag_y, &mag_z );
+			memset(num_buff, 0, NUM_SIZE);
+			strncat(nav_data->pbuffer, ">magX: ", BUFF_SIZE);
+			snprintf(num_buff, NUM_SIZE, "%f", mag_x);
+			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			//nav_data->publish();
 
-		memset(num_buff, 0, NUM_SIZE);
-		strncat(nav_data->pbuffer, ">magZ: ", BUFF_SIZE);
-		snprintf(num_buff, NUM_SIZE, "%f", mag_z);
-		strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-		//nav_data->publish();
+			memset(num_buff, 0, NUM_SIZE);
+			strncat(nav_data->pbuffer, ">magY: ", BUFF_SIZE);
+			snprintf(num_buff, NUM_SIZE, "%f", mag_y);
+			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			//nav_data->publish();
+
+			memset(num_buff, 0, NUM_SIZE);
+			strncat(nav_data->pbuffer, ">magZ: ", BUFF_SIZE);
+			snprintf(num_buff, NUM_SIZE, "%f", mag_z);
+			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			//nav_data->publish();
+		}
 
 		strncat(nav_data->pbuffer, "\n", BUFF_SIZE);
     	nanosleep(&rec, (struct timespec *) NULL);

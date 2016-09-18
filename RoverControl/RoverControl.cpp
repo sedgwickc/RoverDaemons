@@ -21,28 +21,34 @@ using namespace rover;
 using namespace std;
 
 int main( int argc, char **argv ) {
+    /* Allow user to specify via command line that data recieved over channels
+     * should be output to stdout
+     */
 
 	// change to vector
 	//string[] subscribe_channel = { "nav_data" };
 	
-	// for each subscribe_channel, create a new RoverACH object, open the
-	// channel and subscribe to it
+	/* for each subscribe_channel, create a new RoverACH object, open the
+	 * channel and subscribe to it
+	 */
 	RoverACH *nav_data = new RoverACH();
 
 	nav_data->opt_pub = 0;
 	nav_data->opt_sub = 1;
 	strncpy(nav_data->opt_chan_name, "nav_data", NAME_SIZE);
 	nav_data->fin = stdin;
-	nav_data->fout = stdout;
+	nav_data->fout = stdout;    	
 
 	nav_data->chnl->open( nav_data->opt_chan_name );
 
 	nav_data->subscribe();
+	
+	/* for each publish channel, create a new RoverACH object, open the channel
+	 * and set it to publish
+	 */
 
 	return 0;
 
-	//for each publish channel, create a new RoverACH object, open the channel
-	//and set it to publish
 }
 
 
