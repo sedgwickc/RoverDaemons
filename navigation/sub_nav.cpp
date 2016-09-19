@@ -17,7 +17,7 @@
 
 #define BUFF_SIZE 4096
 #define NUM_SIZE 128
-#define BUSNUM 0
+#define BUSNUM 2
 
 using namespace std;
 using namespace rover;
@@ -25,9 +25,9 @@ using namespace rover;
 int main( int argc, char** argv ) {
 	// fork()
 	int res = fork();
-	bool bmp180 = false;
-	bool l3gd20 = false;
-	bool lsm303 = false;
+	bool bmp180 = true;
+	bool l3gd20 = true;
+	bool lsm303 = true;
 
 	// check PID
 	if ( res < 0 ){
@@ -115,7 +115,7 @@ int main( int argc, char** argv ) {
     if( BMP180.begin(BMP180_MODE_HIGHRES) == false){
             fprintf(fp_log,"Could not find a valid BMP180!\n");
 			fflush(fp_log);
-			bmp180 = true;
+			bmp180 = false;
     }
 
     float* temp = (float*)calloc(1,sizeof(float));
@@ -127,7 +127,7 @@ int main( int argc, char** argv ) {
 	if( L3GD20.begin() == false)
 	{
 		fprintf(fp_log, "Could not find a valid L3GD20!\n");
-		l3gd20 = true;
+		l3gd20 = false;
 	}
 	float gyro_x = 0.0;
 	float gyro_y = 0.0;
@@ -142,7 +142,7 @@ int main( int argc, char** argv ) {
 	if( LSM303.begin() == false)
 	{
 		fprintf(fp_log, "Error setting up LSM303!\n");
-		lsm303 = true;
+		lsm303 = false;
 	}
 	float mag_x = 0.0;
 	float mag_y = 0.0;
@@ -168,14 +168,12 @@ int main( int argc, char** argv ) {
 			strncpy(nav_data->pbuffer, ">T: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", *temp);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-			//nav_data->publish();
         
         	BMP180.getPressure(pressure);
 			memset(num_buff, 0, NUM_SIZE);
 			strncat(nav_data->pbuffer, ">P: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", *pressure);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-			//nav_data->publish();
 		}
 
         if( l3gd20 == true ){
@@ -184,19 +182,16 @@ int main( int argc, char** argv ) {
 			strncat(nav_data->pbuffer, ">gyroX: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", gyro_x);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-			//nav_data->publish();
 
 			memset(num_buff, 0, NUM_SIZE);
 			strncat(nav_data->pbuffer, ">gyroY: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", gyro_y);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-			//nav_data->publish();
 			
 			memset(num_buff, 0, NUM_SIZE);
 			strncat(nav_data->pbuffer, ">gyroZ: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", gyro_z);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
-			//nav_data->publish();
 		}
 
 		if( lsm303 == true ){
