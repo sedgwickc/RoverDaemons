@@ -21,18 +21,23 @@ MotorControl::MotorControl(unsigned int *p_left, unsigned int *p_right)
 	if( p_left == NULL || p_right == NULL){
 		cout<<"No pins passed in... \nUsing defaults..."<<endl;
 		set_default_pins();
+    	/* Set PWM and STDBY pins to high otherwise motors sent brake signal */
+		res_left[PWMA_LEFT_INDX] = pins_left[PWMA_LEFT_INDX]->write(HIGH);
+		res_left[PWMB_LEFT_INDX] = pins_left[PWMB_LEFT_INDX]->write(HIGH);
+		res_left[STDBY_LEFT_INDX] = pins_left[STDBY_LEFT_INDX]->write(HIGH);
 		return;
 	}
-
-	/* Set up GPIO pins if not 
+/*
 	for( int i = 0; i < 4; i++)
 	{
 		pins_left[i] = new mraa::Gpio(p_left[i]);
 		res_left[i] = pins_left[i]->dir(mraa::DIR_OUT);
 
-		pins_right[i] = new mraa::Gpio(p_right[i]);
-		res_right[i] = pins_right[i]->dir(mraa::DIR_OUT);
-	}*/
+	//	pins_right[i] = new mraa::Gpio(p_right[i]);
+	//	res_right[i] = pins_right[i]->dir(mraa::DIR_OUT);
+	}
+*/
+
 }
 
 /***************************************************************************
@@ -47,21 +52,30 @@ MotorControl::MotorControl(unsigned int *p_left, unsigned int *p_right)
 
 int MotorControl::turn_right()
 {
+	stop();
+	cout<<"Turning right..."<<endl;
+	res_left[BIN2_LEFT_INDX] = pins_left[BIN2_LEFT_INDX]->write(HIGH);
+	res_left[AIN1_LEFT_INDX] = pins_left[AIN1_LEFT_INDX]->write(HIGH);
 	return 1;
 }
 
 int MotorControl::turn_left()
 {
+	stop();
+	cout<<"Turning left..."<<endl;
+	res_left[BIN1_LEFT_INDX] = pins_left[BIN1_LEFT_INDX]->write(HIGH);
+	res_left[AIN2_LEFT_INDX] = pins_left[AIN2_LEFT_INDX]->write(HIGH);
 	return 1;
 }
 
 int MotorControl::stop()
 {
 	cout<<"Stopping all motors..."<<endl;
-	for( int i = 0; i < PIN_COUNT; i++ )
+	/* minus 3 so that pwm and stdby pins are not touched*/
+	for( int i = 0; i < PIN_COUNT-3; i++ )
 	{
 		res_left[i] = pins_left[i]->write(LOW);
-		res_right[i] = pins_right[i]->write(LOW);
+		//res_right[i] = pins_right[i]->write(LOW);
 	}
 	return 1;
 }
@@ -72,20 +86,21 @@ int MotorControl::forward()
 	cout<<"Setting motor direction forward..."<<endl;
 	/* check state */
 	/* set pins */
-	res_left[0] = pins_left[0]->write(HIGH);
-	res_left[2] = pins_left[2]->write(HIGH);
-	res_right[0] = pins_right[0]->write(HIGH);
-	res_right[2] = pins_right[2]->write(HIGH);
+	res_left[BIN2_LEFT_INDX] = pins_left[BIN2_LEFT_INDX]->write(HIGH);
+	res_left[AIN2_LEFT_INDX] = pins_left[AIN2_LEFT_INDX]->write(HIGH);
+	//res_right[0] = pins_right[0]->write(HIGH);
+	//res_right[2] = pins_right[2]->write(HIGH);
 	return 1;
 }
 
 int MotorControl::backward()
 {
 	stop();
-	res_left[1] = pins_left[1]->write(HIGH);
-	res_left[3] = pins_left[3]->write(HIGH);
-	res_right[1] = pins_right[1]->write(HIGH);
-	res_right[3] = pins_right[3]->write(HIGH);
+	cout<<"Moving backward..."<<endl;
+	res_left[BIN1_LEFT_INDX] = pins_left[BIN1_LEFT_INDX]->write(HIGH);
+	res_left[AIN1_LEFT_INDX] = pins_left[AIN1_LEFT_INDX]->write(HIGH);
+	//res_right[1] = pins_right[1]->write(HIGH);
+	//res_right[3] = pins_right[3]->write(HIGH);
 	return 1;
 }
 
@@ -104,29 +119,53 @@ int MotorControl::set_default_pins()
 	cout<<"Setting default pins..."<<endl;
 	//create left side pins
 	/* bin2 */
-	pins_left[BIN2_LEFT_INDX] = new mraa::Gpio(34);
+	cout<<"Setting up BIN1_LEFT..."<<endl;
+	pins_left[BIN2_LEFT_INDX] = new mraa::Gpio(BIN2_LEFT_PIN);
 	if (pins_left[BIN2_LEFT_INDX] == NULL) {
 	    return mraa::ERROR_UNSPECIFIED;
 	}
 
 	/* bin1 */
-	pins_left[BIN1_LEFT_INDX] = new mraa::Gpio(36);
+	cout<<"Setting up BIN1_LEFT..."<<endl;
+	pins_left[BIN1_LEFT_INDX] = new mraa::Gpio(BIN1_LEFT_PIN);
 	if (pins_left[BIN1_LEFT_INDX] == NULL) {
 	    return mraa::ERROR_UNSPECIFIED;
 	}
 
 	/* AIN1 */
-	pins_left[AIN1_LEFT_INDX] = new mraa::Gpio(38);
+	cout<<"Setting up AIN1_LEFT..."<<endl;
+	pins_left[AIN1_LEFT_INDX] = new mraa::Gpio(AIN1_LEFT_PIN);
 	if (pins_left[AIN1_LEFT_INDX] == NULL) {
 	    return mraa::ERROR_UNSPECIFIED;
 	}
 
 	/* AIN2 */
-	pins_left[AIN2_LEFT_INDX] = new mraa::Gpio(37);
+	cout<<"Setting up AIN2_LEFT..."<<endl;
+	pins_left[AIN2_LEFT_INDX] = new mraa::Gpio(AIN2_LEFT_PIN);
 	if (pins_left[AIN2_LEFT_INDX] == NULL) {
 	    return mraa::ERROR_UNSPECIFIED;
 	}
 	
+	/* STDBY */
+	cout<<"Setting up STDBY_LEFT..."<<endl;
+	pins_left[STDBY_LEFT_INDX] = new mraa::Gpio(STDBY_LEFT_PIN);
+	if (pins_left[STDBY_LEFT_INDX] == NULL) {
+	    return mraa::ERROR_UNSPECIFIED;
+	}
+
+	/* PWMB */
+	cout<<"Setting up PWMB_LEFT..."<<endl;
+	pins_left[PWMB_LEFT_INDX] = new mraa::Gpio(PWMB_LEFT_PIN);
+	if (pins_left[PWMB_LEFT_INDX] == NULL) {
+	    return mraa::ERROR_UNSPECIFIED;
+	}
+
+	/* PWMA */
+	cout<<"Setting up PWMA_LEFT..."<<endl;
+	pins_left[PWMA_LEFT_INDX] = new mraa::Gpio(PWMA_LEFT_PIN);
+	if (pins_left[PWMA_LEFT_INDX] == NULL) {
+	    return mraa::ERROR_UNSPECIFIED;
+	}
 	/* create right side pins
 	pins_right[0] = new mraa::Gpio(45);
 	if (pins_right[0] == NULL) {
@@ -146,7 +185,7 @@ int MotorControl::set_default_pins()
 	}
 	*/
 
-	//set pin direction
+	//set pin direction i.e. input or output
 	for( int i = 0; i < PIN_COUNT; i++ ){
 	    /* set left pins direction */	
 		res_left[i] = pins_left[i]->dir(mraa::DIR_OUT);
@@ -155,7 +194,7 @@ int MotorControl::set_default_pins()
 			return 1;
 		}
 		/* set right pins direction 
-		res_right[i] = pins_right[i]->dir(mraa::DIR_OUT);
+		//res_right[i] = pins_right[i]->dir(mraa::DIR_OUT);
 		if(res_right[i] != mraa::SUCCESS){
 			mraa::printError(res_right[i]);
 			return 1;

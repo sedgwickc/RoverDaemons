@@ -63,7 +63,6 @@ int main( int argc, char** argv ) {
 	}
     return 0;
 		//testing
-		/*
 		mc->forward();
 		sleep(5);
 		mc->stop();
@@ -72,6 +71,5 @@ int main( int argc, char** argv ) {
 		sleep(5);
 		mc->stop();
 		mc->clean_up();
-		*/
 	} 
 }

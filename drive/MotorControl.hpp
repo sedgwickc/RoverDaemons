@@ -16,14 +16,20 @@ using namespace mraa;
 namespace rover {
 
 /* Defines */
-#define PIN_COUNT 4
+#define PIN_COUNT 7
 #define HIGH 1
 #define LOW 0
 /* define/declare default pin */
+#define PWMA_LEFT_PIN 40
 #define AIN1_LEFT_PIN 38
 #define AIN2_LEFT_PIN 37
 #define BIN1_LEFT_PIN 36
+#define STDBY_LEFT_PIN 35
 #define BIN2_LEFT_PIN 34
+#define PWMB_LEFT_PIN 33
+#define STDBY_LEFT_INDX 6
+#define PWMA_LEFT_INDX 5
+#define PWMB_LEFT_INDX 4
 #define AIN1_LEFT_INDX 2
 #define AIN2_LEFT_INDX 3
 #define BIN1_LEFT_INDX 1
@@ -57,9 +63,9 @@ public:
     virtual ~MotorControl();
 private:
 	int curr_speed;
-	mraa::Gpio* pins_right[PIN_COUNT];
+	//mraa::Gpio* pins_right[PIN_COUNT];
 	mraa::Gpio* pins_left[PIN_COUNT];
-	mraa::Result res_right[PIN_COUNT];
+	//mraa::Result res_right[PIN_COUNT];
 	mraa::Result res_left[PIN_COUNT];
 };
 

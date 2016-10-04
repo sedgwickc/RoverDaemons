@@ -1,5 +1,13 @@
 /*
  *
+ * Github: https://github.com/sedgwickc/RoverDaemons/
+ * 
+ * Changlog
+ * 
+ * Ver    Date       User   Issue #  Change
+ * -----------------------------------------------------------------------------
+ * 100    25sep2015  cwick           Initial creation. 
+ *!!!!!!!!!!!!!!!!!!!!!!!!!!!UPDATE VERSION VARIABLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 
 #ifdef HAVE_CONFIG_H
@@ -27,6 +35,10 @@ int main( int argc, char **argv ) {
 
 	// change to vector
 	//string[] subscribe_channel = { "nav_data" };
+
+	/* create a comms object */
+
+	/* make sure connected to qgroundcontrol open */
 	
 	/* for each subscribe_channel, create a new RoverACH object, open the
 	 * channel and subscribe to it
@@ -42,6 +54,8 @@ int main( int argc, char **argv ) {
 	nav_data->chnl->open( nav_data->opt_chan_name );
 
 	nav_data->subscribe();
+
+	/* send GPS location to qgroundcontrol */
 	
 	/* for each publish channel, create a new RoverACH object, open the channel
 	 * and set it to publish
