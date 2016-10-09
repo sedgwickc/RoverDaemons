@@ -47,6 +47,7 @@ int main( int argc, char **argv ) {
 
 	nav_data->opt_pub = 0;
 	nav_data->opt_sub = 1;
+	nav_data->opt_buffer_type = TYPE_NAV_DATA;
 	strncpy(nav_data->opt_chan_name, "nav_data", NAME_SIZE);
 	nav_data->fin = stdin;
 	nav_data->fout = stdout;    	

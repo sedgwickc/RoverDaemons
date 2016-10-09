@@ -14,6 +14,8 @@
 #include "BBB_BMP180/Adafruit_BMP180.hpp"
 #include "BBB_L3GD20/Adafruit_L3GD20.hpp"
 #include "BBB_LSM303/Adafruit_LSM303.h"
+#include "mavlink.h"
+#include "../../RoverGlobals.h"
 
 #define BUFF_SIZE 4096
 #define NUM_SIZE 128
@@ -71,6 +73,7 @@ int main( int argc, char** argv ) {
     strncpy(nav_data->opt_chan_name, "nav_data", NAME_SIZE);
     nav_data->fin = stdin;
     nav_data->fout = stdout;
+    nav_data->opt_buffer_type = TYPE_NAV_DATA;
 
     if(  nav_data->opt_sub == 1 && nav_data->opt_pub ==  nav_data->opt_sub ) {
         fprintf(fp_log, "Error: cannot publish and subscribe\n");
@@ -151,10 +154,13 @@ int main( int argc, char** argv ) {
 	float acc_y = 0.0;
 	float acc_z = 0.0;
 
-	LSM303.getOrientation( &mag_x, &mag_y, &mag_z );
+	//LSM303.getOrientation( &mag_x, &mag_y, &mag_z );
 
-	// TODO: add while condition to check that RoverControl process hasn't sent a stop signal 
-	// Continually publish sensor readings to channel
+    /* TODO:
+     * create mavlink message and send over ach instead of  char[] 
+     * lsm303 & l3gd20: mavlink_msg_raw_imu
+     * bmp180: mavlink_msg_raw_pressure
+     */
 	fprintf(fp_log, "Begin publishing sensor data...\n");
 	fflush(fp_log);
     int t0 = 1;
@@ -168,12 +174,14 @@ int main( int argc, char** argv ) {
 			strncpy(nav_data->pbuffer, ">T: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", *temp);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			nav_data->curr_nav_data.temperature = *temp;
         
         	BMP180.getPressure(pressure);
 			memset(num_buff, 0, NUM_SIZE);
 			strncat(nav_data->pbuffer, ">P: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", *pressure);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			nav_data->curr_nav_data.pressure = *pressure;
 		}
 
         if( l3gd20 == true ){
@@ -182,16 +190,19 @@ int main( int argc, char** argv ) {
 			strncat(nav_data->pbuffer, ">gyroX: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", gyro_x);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			nav_data->curr_nav_data.gyro_x = gyro_x;
 
 			memset(num_buff, 0, NUM_SIZE);
 			strncat(nav_data->pbuffer, ">gyroY: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", gyro_y);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			nav_data->curr_nav_data.gyro_y = gyro_y;
 			
 			memset(num_buff, 0, NUM_SIZE);
 			strncat(nav_data->pbuffer, ">gyroZ: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", gyro_z);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
+			nav_data->curr_nav_data.gyro_z = gyro_z;
 		}
 
 		if( lsm303 == true ){
