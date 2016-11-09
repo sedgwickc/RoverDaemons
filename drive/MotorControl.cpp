@@ -3,6 +3,15 @@
  * MotorControl.cpp
  * The MotorControl class is reponsible for controlling the direction and speed
  * of the 4 motors. 
+ *
+ * Changlog
+ * 
+ * Ver    Date       User      Issue #  Change
+ * -----------------------------------------------------------------------------
+ * 100    25sep2015  sedgwickc          Initial creation. 
+ * 101    08nov2016  sedgwickc          Implement control of all motors. 
+ *                                      Remove handling of PWM pins as mraa
+ *                                      does not support this atm.
  ***************************************************************************/
 
 #include "MotorControl.hpp"
@@ -32,12 +41,6 @@ MotorControl::MotorControl(unsigned int *p_left, unsigned int *p_right)
  PUBLIC FUNCTIONS
  ***************************************************************************/
 
-/**************************************************************************/
-/*!
-    @brief  Setups the HW
-*/
-/**************************************************************************/
-
 int MotorControl::turn_right()
 {
 	stop();
@@ -63,11 +66,16 @@ int MotorControl::turn_left()
 int MotorControl::stop()
 {
 	cout<<"Stopping all motors..."<<endl;
-	/* minus 3 so that pwm and stdby pins are not touched*/
-	for( int i = 0; i < PIN_COUNT-3; i++ )
+	/* minus 2 so that stdby pins are not touched*/
+	for( int i = 0; i < PIN_COUNT; i++ )
 	{
-		res_left[i] = pins_left[i]->write(LOW);
-		res_right[i] = pins_right[i]->write(LOW);
+	    /* Do no set standby pins to low. 
+	     * Standby pins share same index into pin arrays.
+	     */
+	    if( i != STDBY_RIGHT_INDX ){
+			res_left[i] = pins_left[i]->write(LOW);
+			res_right[i] = pins_right[i]->write(LOW);
+		}
 	}
 	return 1;
 }
@@ -146,20 +154,20 @@ int MotorControl::set_default_pins()
 	}
 
 	/* PWMB */
-	cout<<"Setting up PWMB_LEFT..."<<endl;
-    pwm_left[PWMB_LEFT_INDX] = new mraa::Pwm(PWMB_LEFT_PIN);
-	if (pwm_left[PWMB_LEFT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
-    pwm_left[PWMB_LEFT_INDX]->enable(true);
+//	cout<<"Setting up PWMB_LEFT..."<<endl;
+//    pwm_left[PWMB_LEFT_INDX] = new mraa::Pwm(PWMB_LEFT_PIN);
+//	if (pwm_left[PWMB_LEFT_INDX] == NULL) {
+//	    return mraa::ERROR_UNSPECIFIED;
+//	}
+//    pwm_left[PWMB_LEFT_INDX]->enable(true);
 
 	/* PWMA */
-	cout<<"Setting up PWMA_LEFT..."<<endl;
-	pwm_left[PWMA_LEFT_INDX] = new mraa::Pwm(PWMA_LEFT_PIN);
-	if (pwm_left[PWMA_LEFT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
-    pwm_left[PWMA_LEFT_INDX]->enable(true);
+//	cout<<"Setting up PWMA_LEFT..."<<endl;
+//	pwm_left[PWMA_LEFT_INDX] = new mraa::Pwm(PWMA_LEFT_PIN);
+//	if (pwm_left[PWMA_LEFT_INDX] == NULL) {
+//	    return mraa::ERROR_UNSPECIFIED;
+//	}
+//    pwm_left[PWMA_LEFT_INDX]->enable(true);
 
 	/*create right side pins */
 	/* bin2 */
@@ -198,21 +206,22 @@ int MotorControl::set_default_pins()
 	}
 
 	/* PWMB */
-	cout<<"Setting up PWMB_RIGHT..."<<endl;
-	pwm_right[PWMB_RIGHT_INDX] = new mraa::Pwm(PWMB_RIGHT_PIN);
-	if (pwm_right[PWMB_RIGHT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
-    pwm_right[PWMB_RIGHT_INDX]->enable(true);
+//	cout<<"Setting up PWMB_RIGHT..."<<endl;
+//	pwm_right[PWMB_RIGHT_INDX] = new mraa::Pwm(PWMB_RIGHT_PIN);
+//	if (pwm_right[PWMB_RIGHT_INDX] == NULL) {
+//	    return mraa::ERROR_UNSPECIFIED;
+//	}
+//    pwm_right[PWMB_RIGHT_INDX]->enable(true);
 
 	/* PWMA */
-	cout<<"Setting up PWMA_RIGHT..."<<endl;
-	pwm_right[PWMA_RIGHT_INDX] = new mraa::Pwm(PWMA_RIGHT_PIN);
-	if (pwm_right[PWMA_RIGHT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
-    pwm_right[PWMA_RIGHT_INDX]->enable(true);
-	//set pin direction i.e. input or output
+//	cout<<"Setting up PWMA_RIGHT..."<<endl;
+//	pwm_right[PWMA_RIGHT_INDX] = new mraa::Pwm(PWMA_RIGHT_PIN);
+//	if (pwm_right[PWMA_RIGHT_INDX] == NULL) {
+//	    return mraa::ERROR_UNSPECIFIED;
+//	}
+//    pwm_right[PWMA_RIGHT_INDX]->enable(true);
+
+	//set pin direction to output
 	for( int i = 0; i < PIN_COUNT; i++ ){
 	    /* set left pins direction */	
 		res_left[i] = pins_left[i]->dir(mraa::DIR_OUT);
@@ -229,10 +238,10 @@ int MotorControl::set_default_pins()
 	}
 
 	/* set up pwm duty cycle */
-	pwm_right[PWMA_RIGHT_INDX]->write(DUTY_CYCLE);
-	pwm_right[PWMB_RIGHT_INDX]->write(DUTY_CYCLE);
-	pwm_left[PWMA_LEFT_INDX]->write(DUTY_CYCLE);
-	pwm_left[PWMB_LEFT_INDX]->write(DUTY_CYCLE);
+//	pwm_right[PWMA_RIGHT_INDX]->write(DUTY_CYCLE);
+//	pwm_right[PWMB_RIGHT_INDX]->write(DUTY_CYCLE);
+//	pwm_left[PWMA_LEFT_INDX]->write(DUTY_CYCLE);
+//	pwm_left[PWMB_LEFT_INDX]->write(DUTY_CYCLE);
 
 	return 1;
 }
@@ -243,10 +252,12 @@ int MotorControl::clean_up()
 		delete pins_left[i];
 		delete pins_right[i];
 	}
+	/*
     delete pwm_right[PWMA_RIGHT_INDX];
     delete pwm_right[PWMB_RIGHT_INDX];
     delete pwm_left[PWMA_LEFT_INDX];
     delete pwm_left[PWMB_LEFT_INDX];
+    */
 
 	return 1;
 }

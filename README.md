@@ -5,8 +5,9 @@ charlessedgwick.com
 
 Dependancies
 ------------
- - mraa
- - ACH
+ - mraa: https://github.com/intel-iot-devkit/mraa
+ - ACH: https://github.com/golems/ach
+ - bb.org-overlays: https://github.com/RobertCNelson/bb.org-overlays
  - RoverACH
  - BMP180 Beaglebone Black C++ driver
  - LSM303 Beaglebone Black C++ driver
@@ -26,6 +27,11 @@ Compilation
 
 Startup 
 -------
+
+0. Ensure pwm pins are setup:
+    ``` 
+    sudo setupPWM.sh
+    ```
 
 1. create channels 
     ```

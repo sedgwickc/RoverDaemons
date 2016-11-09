@@ -7,6 +7,8 @@
  * Ver    Date       User   Issue #  Change
  * -----------------------------------------------------------------------------
  * 100    25sep2015  cwick           Initial creation. 
+ * 101    08nov2016  cwick           Implement printing of 100 frames from 
+ *                                   sub_nav daemon
  *!!!!!!!!!!!!!!!!!!!!!!!!!!!UPDATE VERSION VARIABLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 
@@ -33,9 +35,6 @@ int main( int argc, char **argv ) {
      * should be output to stdout
      */
 
-	// change to vector
-	//string[] subscribe_channel = { "nav_data" };
-
 	/* create a comms object */
 
 	/* make sure connected to qgroundcontrol open */
@@ -45,6 +44,7 @@ int main( int argc, char **argv ) {
 	 */
 	RoverACH *nav_data = new RoverACH();
 
+    /* setup nav_data channel to receive data to be stored in curr_nav_data */
 	nav_data->opt_pub = 0;
 	nav_data->opt_sub = 1;
 	nav_data->opt_buffer_type = TYPE_NAV_DATA;
@@ -54,7 +54,7 @@ int main( int argc, char **argv ) {
 
 	nav_data->chnl->open( nav_data->opt_chan_name );
 
-    /* print 100 frame of data sent by the navigation sub system */
+    /* print 100 frames of data sent by the navigation sub system */
 	for( int i = 0; i < 100; i++ ){
 	    nav_data->getFrame();
 	    printf("Nav Data frame #%d recieved:\n", i);
@@ -69,10 +69,10 @@ int main( int argc, char **argv ) {
 	    printf("    acc_z: %f\n", nav_data->curr_nav_data.acc_z );
 	    printf("    pressure: %f\n",nav_data->curr_nav_data.pressure );
 	    printf("    temperature: %f\n",nav_data->curr_nav_data.temperature );
+
+	    printf("%s\n", nav_data->pbuffer);
 	    usleep(100000);
 	}
-
-	nav_data->subscribe();
 
 
 	/* send GPS location to qgroundcontrol */
@@ -81,7 +81,7 @@ int main( int argc, char **argv ) {
 	 * and set it to publish
 	 */
 
-	//nav_data->chnl->close();
+	nav_data->chnl->close();
 	return 0;
 
 }

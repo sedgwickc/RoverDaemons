@@ -84,8 +84,8 @@ private:
 	int curr_speed;
 	mraa::Gpio* pins_right[PIN_COUNT];
 	mraa::Gpio* pins_left[PIN_COUNT];
-	mraa::Pwm*  pwm_left[PWM_COUNT];
-	mraa::Pwm*  pwm_right[PWM_COUNT];
+//	mraa::Pwm*  pwm_left[PWM_COUNT];
+//	mraa::Pwm*  pwm_right[PWM_COUNT];
 	mraa::Result res_right[PIN_COUNT];
 	mraa::Result res_left[PIN_COUNT];
 };

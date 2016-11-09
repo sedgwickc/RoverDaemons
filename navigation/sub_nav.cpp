@@ -50,7 +50,7 @@ int main( int argc, char** argv ) {
 
 	time( &rawtime );
 
-	fprintf(fp_log,"\n****************************************RoverControl\n****************************************%s", ctime(&rawtime));
+	fprintf(fp_log,"\n****************************************Navigation\n****************************************%s", ctime(&rawtime));
 	fprintf(fp_log, "Starting navigation daemon...\n");
 	umask(0);
 	int sid = setsid();
@@ -73,6 +73,7 @@ int main( int argc, char** argv ) {
     strncpy(nav_data->opt_chan_name, "nav_data", NAME_SIZE);
     nav_data->fin = stdin;
     nav_data->fout = stdout;
+    //nav_data->opt_buffer_type = TYPE_STRING;
     nav_data->opt_buffer_type = TYPE_NAV_DATA;
 
     if(  nav_data->opt_sub == 1 && nav_data->opt_pub ==  nav_data->opt_sub ) {
@@ -213,21 +214,18 @@ int main( int argc, char** argv ) {
 			snprintf(num_buff, NUM_SIZE, "%f", acc_x);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
 			nav_data->curr_nav_data.acc_x = acc_x;
-			//nav_data->publish();
 
 			memset(num_buff, 0, NUM_SIZE);
 			strncat(nav_data->pbuffer, ">accY: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", acc_y);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
 			nav_data->curr_nav_data.acc_y = acc_y;
-			//nav_data->publish();
 
 			memset(num_buff, 0, NUM_SIZE);
 			strncat(nav_data->pbuffer, ">accZ: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", acc_z);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
 			nav_data->curr_nav_data.acc_z = acc_z;
-			//nav_data->publish();
 
 			LSM303.getOrientation( &mag_x, &mag_y, &mag_z );
 			memset(num_buff, 0, NUM_SIZE);
@@ -235,23 +233,21 @@ int main( int argc, char** argv ) {
 			snprintf(num_buff, NUM_SIZE, "%f", mag_x);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
 			nav_data->curr_nav_data.mag_x = mag_x;
-			//nav_data->publish();
 
 			memset(num_buff, 0, NUM_SIZE);
 			strncat(nav_data->pbuffer, ">magY: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", mag_y);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
 			nav_data->curr_nav_data.mag_y = mag_y;
-			//nav_data->publish();
 
 			memset(num_buff, 0, NUM_SIZE);
 			strncat(nav_data->pbuffer, ">magZ: ", BUFF_SIZE);
 			snprintf(num_buff, NUM_SIZE, "%f", mag_z);
 			strncat(nav_data->pbuffer, num_buff, BUFF_SIZE);
 			nav_data->curr_nav_data.mag_z = mag_z;
-			//nav_data->publish();
 		}
 
+        /* add EOL to buffer*/
 		strncat(nav_data->pbuffer, "\n", BUFF_SIZE);
     	nanosleep(&rec, (struct timespec *) NULL);
 		nav_data->publish();
