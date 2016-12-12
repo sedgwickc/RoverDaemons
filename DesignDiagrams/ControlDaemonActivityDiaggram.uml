@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_vVJCYL3UEeayq4gqSthEpA" name="RootElement">
+  <packagedElement xmi:type="uml:Activity" xmi:id="_vVvfUL3UEeayq4gqSthEpA" name="ControlDaemonActivity" node="__36RIL3UEeayq4gqSthEpA _gB83sL_uEeaqKsYbFHdYeg _ZLR5AMApEeaqKsYbFHdYeg _3_cw0MApEeaqKsYbFHdYeg _FdWgYMAqEeaqKsYbFHdYeg _M5TUkMAqEeaqKsYbFHdYeg _NVgvcMAqEeaqKsYbFHdYeg _P1R9gMAqEeaqKsYbFHdYeg _XyivAMAqEeaqKsYbFHdYeg _eqs5oMAqEeaqKsYbFHdYeg _hC1OoMAqEeaqKsYbFHdYeg _mEW84MAsEeaqKsYbFHdYeg _oeeO4MAsEeaqKsYbFHdYeg _7JkcEMAsEeaqKsYbFHdYeg _FrKykMAtEeaqKsYbFHdYeg _yOlooMAtEeaqKsYbFHdYeg _SeO_8MAuEeaqKsYbFHdYeg _a3fJ4MAuEeaqKsYbFHdYeg _cR1oAMAuEeaqKsYbFHdYeg _1kjpcMAuEeaqKsYbFHdYeg _9RwlsMAuEeaqKsYbFHdYeg _FK2B0MAvEeaqKsYbFHdYeg _N-fowMAvEeaqKsYbFHdYeg">
+    <edge xmi:type="uml:ControlFlow" xmi:id="_hhumkMApEeaqKsYbFHdYeg" target="_ZLR5AMApEeaqKsYbFHdYeg" source="_gB83sL_uEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_DDnB0MAqEeaqKsYbFHdYeg" target="_3_cw0MApEeaqKsYbFHdYeg" source="_ZLR5AMApEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_cRV1kMAqEeaqKsYbFHdYeg" target="_XyivAMAqEeaqKsYbFHdYeg" source="_P1R9gMAqEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_rj714MAqEeaqKsYbFHdYeg" target="_P1R9gMAqEeaqKsYbFHdYeg" source="_hC1OoMAqEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_-uUAEMAqEeaqKsYbFHdYeg" name="No response" target="_eqs5oMAqEeaqKsYbFHdYeg" source="_XyivAMAqEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_VsA1cMAsEeaqKsYbFHdYeg" name="Fail" target="_FdWgYMAqEeaqKsYbFHdYeg" source="_3_cw0MApEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_qYqDoMAsEeaqKsYbFHdYeg" target="_oeeO4MAsEeaqKsYbFHdYeg" source="_mEW84MAsEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_0KnF4MAsEeaqKsYbFHdYeg" name="Success" target="_mEW84MAsEeaqKsYbFHdYeg" source="_3_cw0MApEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_5kgiwMAsEeaqKsYbFHdYeg" target="_mEW84MAsEeaqKsYbFHdYeg" source="_FdWgYMAqEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_EaGzUMAtEeaqKsYbFHdYeg" target="_7JkcEMAsEeaqKsYbFHdYeg" source="_oeeO4MAsEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_Mo3kgMAtEeaqKsYbFHdYeg" name="Fail" target="_FrKykMAtEeaqKsYbFHdYeg" source="_7JkcEMAsEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_Y18lYMAtEeaqKsYbFHdYeg" target="_hC1OoMAqEeaqKsYbFHdYeg" source="_FrKykMAtEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_aNAe8MAtEeaqKsYbFHdYeg" name="Success" target="_hC1OoMAqEeaqKsYbFHdYeg" source="_7JkcEMAsEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="__talQMAtEeaqKsYbFHdYeg" name="Response (ACK packet)" target="_yOlooMAtEeaqKsYbFHdYeg" source="_XyivAMAqEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_fbNMsMAuEeaqKsYbFHdYeg" target="_cR1oAMAuEeaqKsYbFHdYeg" source="_yOlooMAtEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_g-lD8MAuEeaqKsYbFHdYeg" target="_SeO_8MAuEeaqKsYbFHdYeg" source="_cR1oAMAuEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_iZSucMAuEeaqKsYbFHdYeg" target="_a3fJ4MAuEeaqKsYbFHdYeg" source="_SeO_8MAuEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_7TWYQMAuEeaqKsYbFHdYeg" target="_1kjpcMAuEeaqKsYbFHdYeg" source="_a3fJ4MAuEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_ASeksMAvEeaqKsYbFHdYeg" name="True" target="_9RwlsMAuEeaqKsYbFHdYeg" source="_1kjpcMAuEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_CIviwMAvEeaqKsYbFHdYeg" target="_9RwlsMAuEeaqKsYbFHdYeg" source="_eqs5oMAqEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_IkHDsMAvEeaqKsYbFHdYeg" name="False" target="_FK2B0MAvEeaqKsYbFHdYeg" source="_1kjpcMAuEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_LSptkMAvEeaqKsYbFHdYeg" target="_gB83sL_uEeaqKsYbFHdYeg" source="__36RIL3UEeayq4gqSthEpA"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_RG3u8MAvEeaqKsYbFHdYeg" name="every $PERIOD $FREQUENCY" target="_N-fowMAvEeaqKsYbFHdYeg" source="_FK2B0MAvEeaqKsYbFHdYeg"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_Rp4VYMAvEeaqKsYbFHdYeg" target="_FK2B0MAvEeaqKsYbFHdYeg" source="_N-fowMAvEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:InitialNode" xmi:id="__36RIL3UEeayq4gqSthEpA" name="Control Daemon Start" outgoing="_LSptkMAvEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_gB83sL_uEeaqKsYbFHdYeg" name="Fork Navigation Daemon" incoming="_LSptkMAvEeaqKsYbFHdYeg" outgoing="_hhumkMApEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_ZLR5AMApEeaqKsYbFHdYeg" name="Create and open navigation channels" incoming="_hhumkMApEeaqKsYbFHdYeg" outgoing="_DDnB0MAqEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:DecisionNode" xmi:id="_3_cw0MApEeaqKsYbFHdYeg" name="Navigation Channel creation" incoming="_DDnB0MAqEeaqKsYbFHdYeg" outgoing="_VsA1cMAsEeaqKsYbFHdYeg _0KnF4MAsEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_FdWgYMAqEeaqKsYbFHdYeg" name="Log error. Create comms packet to transmit error to base. " incoming="_VsA1cMAsEeaqKsYbFHdYeg" outgoing="_5kgiwMAsEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:CallBehaviorAction" xmi:id="_M5TUkMAqEeaqKsYbFHdYeg" name="CallBehaviorAction1" behavior="_vVvfUL3UEeayq4gqSthEpA"/>
+    <node xmi:type="uml:CallBehaviorAction" xmi:id="_NVgvcMAqEeaqKsYbFHdYeg" name="CallBehaviorAction2" behavior="_vVvfUL3UEeayq4gqSthEpA"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_P1R9gMAqEeaqKsYbFHdYeg" name="connect to base station" incoming="_rj714MAqEeaqKsYbFHdYeg" outgoing="_cRV1kMAqEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:DecisionNode" xmi:id="_XyivAMAqEeaqKsYbFHdYeg" name="Base Station Response" incoming="_cRV1kMAqEeaqKsYbFHdYeg" outgoing="_-uUAEMAqEeaqKsYbFHdYeg __talQMAtEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_eqs5oMAqEeaqKsYbFHdYeg" name="Check for defined mission" incoming="_-uUAEMAqEeaqKsYbFHdYeg" outgoing="_CIviwMAvEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_hC1OoMAqEeaqKsYbFHdYeg" name="Create Comms object" incoming="_Y18lYMAtEeaqKsYbFHdYeg _aNAe8MAtEeaqKsYbFHdYeg" outgoing="_rj714MAqEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_mEW84MAsEeaqKsYbFHdYeg" name="Fork drive daemon" incoming="_0KnF4MAsEeaqKsYbFHdYeg _5kgiwMAsEeaqKsYbFHdYeg" outgoing="_qYqDoMAsEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_oeeO4MAsEeaqKsYbFHdYeg" name="Create and open drive channels" incoming="_qYqDoMAsEeaqKsYbFHdYeg" outgoing="_EaGzUMAtEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:DecisionNode" xmi:id="_7JkcEMAsEeaqKsYbFHdYeg" name="Drive Channel creation" incoming="_EaGzUMAtEeaqKsYbFHdYeg" outgoing="_Mo3kgMAtEeaqKsYbFHdYeg _aNAe8MAtEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_FrKykMAtEeaqKsYbFHdYeg" name="Log error. Create comms packet to transmit error to base." incoming="_Mo3kgMAtEeaqKsYbFHdYeg" outgoing="_Y18lYMAtEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_yOlooMAtEeaqKsYbFHdYeg" name="Send Error packets if any." incoming="__talQMAtEeaqKsYbFHdYeg" outgoing="_fbNMsMAuEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_SeO_8MAuEeaqKsYbFHdYeg" name="Request command from base" incoming="_g-lD8MAuEeaqKsYbFHdYeg" outgoing="_iZSucMAuEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_a3fJ4MAuEeaqKsYbFHdYeg" name=" Send initial heartbeat." incoming="_iZSucMAuEeaqKsYbFHdYeg" outgoing="_7TWYQMAuEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_cR1oAMAuEeaqKsYbFHdYeg" name="Send Rover status packet" incoming="_fbNMsMAuEeaqKsYbFHdYeg" outgoing="_g-lD8MAuEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:DecisionNode" xmi:id="_1kjpcMAuEeaqKsYbFHdYeg" name="Defined Mission" incoming="_7TWYQMAuEeaqKsYbFHdYeg" outgoing="_ASeksMAvEeaqKsYbFHdYeg _IkHDsMAvEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_9RwlsMAuEeaqKsYbFHdYeg" name="Contiue/Start mission" incoming="_ASeksMAvEeaqKsYbFHdYeg _CIviwMAvEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_FK2B0MAvEeaqKsYbFHdYeg" name="Await command/mission " incoming="_IkHDsMAvEeaqKsYbFHdYeg _Rp4VYMAvEeaqKsYbFHdYeg" outgoing="_RG3u8MAvEeaqKsYbFHdYeg"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_N-fowMAvEeaqKsYbFHdYeg" name="Send heartbeat packet" incoming="_RG3u8MAvEeaqKsYbFHdYeg" outgoing="_Rp4VYMAvEeaqKsYbFHdYeg"/>
+  </packagedElement>
+</uml:Model>
