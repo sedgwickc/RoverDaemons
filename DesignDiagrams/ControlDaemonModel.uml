@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_vVJCYL3UEeayq4gqSthEpA" name="RootElement">
+  <ownedComment xmi:type="uml:Comment" xmi:id="_bREY4MSfEeaYzOyT_pXBMg" annotatedElement="_wKyPMMSeEeaYzOyT_pXBMg">
+    <body>RoverDaemon: abstract class extended &#xD;
+by all daemons used to provide some &#xD;
+basic attributes and methods</body>
+  </ownedComment>
   <packagedElement xmi:type="uml:Activity" xmi:id="_vVvfUL3UEeayq4gqSthEpA" name="ControlDaemonActivity" node="__36RIL3UEeayq4gqSthEpA _gB83sL_uEeaqKsYbFHdYeg _ZLR5AMApEeaqKsYbFHdYeg _3_cw0MApEeaqKsYbFHdYeg _FdWgYMAqEeaqKsYbFHdYeg _M5TUkMAqEeaqKsYbFHdYeg _NVgvcMAqEeaqKsYbFHdYeg _P1R9gMAqEeaqKsYbFHdYeg _XyivAMAqEeaqKsYbFHdYeg _eqs5oMAqEeaqKsYbFHdYeg _hC1OoMAqEeaqKsYbFHdYeg _mEW84MAsEeaqKsYbFHdYeg _oeeO4MAsEeaqKsYbFHdYeg _7JkcEMAsEeaqKsYbFHdYeg _FrKykMAtEeaqKsYbFHdYeg _yOlooMAtEeaqKsYbFHdYeg _SeO_8MAuEeaqKsYbFHdYeg _a3fJ4MAuEeaqKsYbFHdYeg _cR1oAMAuEeaqKsYbFHdYeg _1kjpcMAuEeaqKsYbFHdYeg _9RwlsMAuEeaqKsYbFHdYeg _FK2B0MAvEeaqKsYbFHdYeg _N-fowMAvEeaqKsYbFHdYeg">
     <edge xmi:type="uml:ControlFlow" xmi:id="_hhumkMApEeaqKsYbFHdYeg" target="_ZLR5AMApEeaqKsYbFHdYeg" source="_gB83sL_uEeaqKsYbFHdYeg"/>
     <edge xmi:type="uml:ControlFlow" xmi:id="_DDnB0MAqEeaqKsYbFHdYeg" target="_3_cw0MApEeaqKsYbFHdYeg" source="_ZLR5AMApEeaqKsYbFHdYeg"/>
@@ -48,5 +53,16 @@
     <node xmi:type="uml:OpaqueAction" xmi:id="_9RwlsMAuEeaqKsYbFHdYeg" name="Contiue/Start mission" incoming="_ASeksMAvEeaqKsYbFHdYeg _CIviwMAvEeaqKsYbFHdYeg"/>
     <node xmi:type="uml:OpaqueAction" xmi:id="_FK2B0MAvEeaqKsYbFHdYeg" name="Await command/mission " incoming="_IkHDsMAvEeaqKsYbFHdYeg _Rp4VYMAvEeaqKsYbFHdYeg" outgoing="_RG3u8MAvEeaqKsYbFHdYeg"/>
     <node xmi:type="uml:OpaqueAction" xmi:id="_N-fowMAvEeaqKsYbFHdYeg" name="Send heartbeat packet" incoming="_RG3u8MAvEeaqKsYbFHdYeg" outgoing="_Rp4VYMAvEeaqKsYbFHdYeg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_jBePkMSeEeaYzOyT_pXBMg" name="RoverControl"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_oPTmYMSeEeaYzOyT_pXBMg" name="RoverACH"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_wKyPMMSeEeaYzOyT_pXBMg" name="RoverDaemon">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_5cywoMSfEeaYzOyT_pXBMg" name="xPID" visibility="private" type="_OnIAYMSgEeaYzOyT_pXBMg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_LD-CsMSgEeaYzOyT_pXBMg" name="signed 32 bit"/>
+  <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_OnIAYMSgEeaYzOyT_pXBMg" name="integer">
+    <ownedComment xmi:type="uml:Comment" xmi:id="_OnIAYcSgEeaYzOyT_pXBMg" annotatedElement="_OnIAYMSgEeaYzOyT_pXBMg">
+      <body>signed 32bit </body>
+    </ownedComment>
   </packagedElement>
 </uml:Model>
