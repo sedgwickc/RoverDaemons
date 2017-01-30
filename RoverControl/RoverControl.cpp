@@ -4,10 +4,10 @@
  * 
  * Changlog
  * 
- * Ver    Date       User   Issue #  Change
+ * Ver    Date       User      Issue #  Change
  * -----------------------------------------------------------------------------
- * 100    25sep2015  cwick           Initial creation. 
- * 101    08nov2016  cwick           Implement printing of 100 frames from 
+ * 100    25sep2015  sedgwickc           Initial creation. 
+ * 101    08nov2016  sedgwickc           Implement printing of 100 frames from 
  *                                   sub_nav daemon
  *!!!!!!!!!!!!!!!!!!!!!!!!!!!UPDATE VERSION VARIABLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
@@ -26,20 +26,25 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include "../../RoverACH/RoverACH.hpp"
+#include "RoverControl.hpp"
 
 using namespace rover;
 using namespace std;
 
 int main( int argc, char **argv ) {
-    /* Allow user to specify via command line that data recieved over channels
-     * should be output to stdout
+    /* TODO: Allow user to specify via command line whether data recieved over channels
+     * should be logged
      */
 
-	/* create a comms object */
+    /* TODO: start other daemons */
+    start_navigation();
+    start_drive();
+
+	/* TODO: create a comms object */
 
 	/* make sure connected to qgroundcontrol open */
 	
-	/* for each subscribe_channel, create a new RoverACH object, open the
+	/* TODO: for each subscribe_channel, create a new RoverACH object, open the
 	 * channel and subscribe to it
 	 */
 	RoverACH *nav_data = new RoverACH();
@@ -75,7 +80,7 @@ int main( int argc, char **argv ) {
 	}
 
 
-	/* send GPS location to qgroundcontrol */
+	/* TODO: send GPS location to qgroundcontrol */
 	
 	/* for each publish channel, create a new RoverACH object, open the channel
 	 * and set it to publish
@@ -86,6 +91,13 @@ int main( int argc, char **argv ) {
 
 }
 
+void start_navigation(){
+
+}
+
+void start_drive(){
+
+}
 
 /* ex: set shiftwidth=4 tabstop=4 expandtab: */
 /* Local Variables:                          */
