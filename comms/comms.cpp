@@ -33,20 +33,21 @@
 #include <sstream>
 #include <stdio.h>
 #include <iostream>
-#include "bus/SPIDevice.h"
+#include "RFM69/rfm69.h"
 
 using namespace exploringBB;
 using namespace std;
+using namespace rover;
 
 int main(int argc, char** argv) {
     //! [Interesting]
     cout << "Starting SPI COMMS Example" << endl;
-    SPIDevice *busDevice = new SPIDevice(0,0); //Using second SPI bus (both loaded)
-    busDevice->setSpeed(4000000);      // Have access to SPI Device object
-    busDevice->setMode(SPIDevice::MODE0);
+
+    /* initialize comms */
+    RFM69HCW *comms = new RFM69HCW(0,0);
  
     cout << "Exiting SPI COMMS Example" << endl;
-    delete busDevice;
+    delete comms;
 
     //! [Interesting]
 }
