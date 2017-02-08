@@ -41,13 +41,35 @@ using namespace rover;
 
 int main(int argc, char** argv) {
     //! [Interesting]
+    char receivedData[63];
+
     cout << "Starting SPI COMMS Example" << endl;
 
     /* initialize comms */
     RFM69HCW *comms = new RFM69HCW(0,0);
+   // int datalen = 0;
+   // /* attempt to receive ten packets */
+   // for(int i = 0; i < 10; i++){
+   //     printf("RSSI: %d\n", comms->getRSSI(0));
+   //     datalen = comms->rfm69_receive_small_packet();
+   //     if( datalen > 0 ) {
+   //         comms->getData(receivedData);
+   //         printf("New packet received! ---------------\n\r");
+   //         printf("Data: \n\r");
+   //         for(int j = 0; j < datalen; j++) {
+   //           printf("%c", receivedData[j]);
+   //         }
+   //         printf("\n\r------------------------------------\n\r");
+   //     } else if( datalen == -1 ){
+   //         printf("Error: received packet size greater than buffer size\n");
+   //     } else if( datalen == -2 ){
+   //         printf("Error: receive operation timed out\n");
+   //     }
+   // }
  
     cout << "Exiting SPI COMMS Example" << endl;
     delete comms;
+    return 0;
 
     //! [Interesting]
 }

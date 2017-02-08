@@ -1,6 +1,6 @@
 TOP=..
 GPP=g++
-CFLAGS= 
+CFLAGS=-Wall -g -DDEBUG
 DEBUG=-Wall -g -DDEBUG
 LINKER= -lmraa 
 BUILD=build/
