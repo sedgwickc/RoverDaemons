@@ -1,0 +1,37 @@
+sd_RoverControl.txt
+
+This file describes the design of the RoverControl daemon. 
+
+Change Log
+----------
+
+Ver  Usr       Date       Description
+-------------------------------------------------------------------------------
+100  sedgwickc 04dec2016  Initial creation.
+
+Contents
+--------
+1. Introduction
+2. Referenced Classes
+3. RoverControl class
+    3.1 Description
+    3.2 Attributes
+    3.3 C structures
+    3.4 Methods
+4. RoverControl daemon
+
+
+1. Introduction
+---------------
+The RoverControl daemon is repsonsible for the following tasks:
+ - reacting to sensor data
+ - determining rover moevements
+ - executing "missions"
+ - reacting to power status
+ - reacting to commands from base station
+
+The RoverControl daemon monitors sensor data from the Navigation and Sensor
+Daemons and will react to environmental changes as they come up using
+behaviours defined in the RoverControl class. The RoverControl daemon also
+supports the completion of defined missions received from the base station.
+
