@@ -54,7 +54,26 @@ int main( int argc, char **argv ) {
 
 	nav_data->chnl->open( nav_data->opt_chan_name );
 
+    /* print 100 frame of data sent by the navigation sub system */
+	for( int i = 0; i < 100; i++ ){
+	    nav_data->getFrame();
+	    printf("Nav Data frame #%d recieved:\n", i);
+        printf("    gyro_x: %f\n", nav_data->curr_nav_data.gyro_x);
+        printf("    gyro_y: %f\n", nav_data->curr_nav_data.gyro_y );
+        printf("    gyro_z: %f\n", nav_data->curr_nav_data.gyro_z );
+	    printf("    mag_x: %f\n", nav_data->curr_nav_data.mag_x );
+	    printf("    mag_y: %f\n", nav_data->curr_nav_data.mag_y );
+	    printf("    mag_z: %f\n", nav_data->curr_nav_data.mag_z );
+	    printf("    acc_x: %f\n", nav_data->curr_nav_data.acc_x );
+	    printf("    acc_y: %f\n", nav_data->curr_nav_data.acc_y );
+	    printf("    acc_z: %f\n", nav_data->curr_nav_data.acc_z );
+	    printf("    pressure: %f\n",nav_data->curr_nav_data.pressure );
+	    printf("    temperature: %f\n",nav_data->curr_nav_data.temperature );
+	    usleep(100000);
+	}
+
 	nav_data->subscribe();
+
 
 	/* send GPS location to qgroundcontrol */
 	
@@ -62,6 +81,7 @@ int main( int argc, char **argv ) {
 	 * and set it to publish
 	 */
 
+	//nav_data->chnl->close();
 	return 0;
 
 }
