@@ -26,7 +26,7 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include "../../RoverACH/RoverACH.hpp"
-#include "RoverControl.hpp"
+#include "rover_control.hpp"
 
 using namespace rover;
 using namespace std;
