@@ -1,20 +1,35 @@
-Rover 
-=====
+Rover Control Project
+=====================
 Charles Sedgwick
-charlessedgwick.com
+[charlessedgwick.com]
+
+RoverDaemons exits as a test bed for learning how to implement control
+software for autonomous land based vehicles. The core computing platforms
+supported are the the Beaglebone Black and Green. The Beaglebone blue should be
+compatible but has not been tested. 
 
 Dependancies
 ------------
+All branches:
  - mraa: https://github.com/intel-iot-devkit/mraa
- - ACH: https://github.com/golems/ach
  - bb.org-overlays: https://github.com/RobertCNelson/bb.org-overlays
  - RoverACH
  - BMP180 Beaglebone Black C++ driver
  - LSM303 Beaglebone Black C++ driver
  - L3DG20 Beaglebone black C++ driver
 
+@master:
+ - ROS kinetic
+
+@feature-ach:
+ - ACH: https://github.com/golems/ach
+
 Compilation
 -----------
+
+@master:
+
+@feature-ach:
 1. clone directory
     ```
     https://github.com/sedgwickc/RoverDaemons.git
@@ -25,9 +40,13 @@ Compilation
     make all
     ```
 
-Startup 
+Startup
 -------
 
+@master:
+
+
+@feature-ach:
 0. Ensure pwm pins are setup:
     ``` 
     sudo setupPWM.sh
@@ -48,6 +67,10 @@ Startup
 
 Shutdown
 --------
+
+@master:
+
+@feature-ach:
 1. Kill daemons
     ```
     sudo kill $DAEMON_PID
@@ -55,6 +78,10 @@ Shutdown
 
 Troubleshooting
 ---------------
+
+@master:
+
+@feature-ach:
 1. delete channels
     ```
     sudo ./create_channels.sh -d
