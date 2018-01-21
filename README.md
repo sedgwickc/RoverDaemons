@@ -5,24 +5,29 @@ Charles Sedgwick
 
 RoverDaemons exits as a test bed for learning how to implement control
 software for autonomous land based vehicles. The core computing platforms
-supported are the the Beaglebone Black and Green. The Beaglebone blue should be
-compatible but has not been tested. 
+supported are the the BeagleBone Blue. The BeagleBone Black and Green are
+supported via the BeagleBoneBlack branch. 
 
 Dependancies
 ------------
 All branches:
- - mraa: https://github.com/intel-iot-devkit/mraa
- - bb.org-overlays: https://github.com/RobertCNelson/bb.org-overlays
- - RoverACH
- - BMP180 Beaglebone Black C++ driver
- - LSM303 Beaglebone Black C++ driver
- - L3DG20 Beaglebone black C++ driver
+
 
 @master:
- - ROS kinetic
+ - robotics_cape_installer:
+   https://github.com/StrawsonDesign/Robotics_Cape_Installer
+ - Latest Debian Stretch IoT image for BeagleBone Blue
 
 @feature-ach:
  - ACH: https://github.com/golems/ach
+
+@BeagleBoneBlack
+ - ROS kinetic
+ - mraa: https://github.com/intel-iot-devkit/mraa
+ - bb.org-overlays: https://github.com/RobertCNelson/bb.org-overlays
+ - BMP180 Beaglebone Black C++ driver
+ - LSM303 Beaglebone Black C++ driver
+ - L3DG20 Beaglebone black C++ driver
 
 Compilation
 -----------
