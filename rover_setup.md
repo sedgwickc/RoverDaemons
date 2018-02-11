@@ -1,6 +1,16 @@
 BeagleBone Blue Setup
 =====================
 
+System Setup
+------------
+1. Latest Debian Stretch IoT image for BBBL
+    - includes roboticscape
+2. install ROS Kinetic from source using ROS wiki instructions
+    - must perform OS verion override (stretch)
+    - SDLC was skipped and installed seperately 
+3. Install OpenCV from source
+    - using install_opencv.sh
+
 Connect to WiFi
 ---------------
 To connect to your Wireless network type the following command in the terminal
