@@ -17,6 +17,7 @@ All branches:
  - robotics_cape_installer:
    https://github.com/StrawsonDesign/Robotics_Cape_Installer
  - Latest Debian Stretch IoT image for BeagleBone Blue
+ - OpenCV 3.2
 
 @feature-ach:
  - ACH: https://github.com/golems/ach
@@ -33,6 +34,7 @@ Compilation
 -----------
 
 @master:
+ - run install_opencv.sh
 
 @feature-ach:
 1. clone directory

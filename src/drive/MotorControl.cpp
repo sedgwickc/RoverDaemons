@@ -1,19 +1,16 @@
 /***************************************************************************
- * Charles Sedgwick
  * MotorControl.cpp
+ * Charles Sedgwick
  * The MotorControl class is reponsible for controlling the direction and speed
  * of the 4 motors. 
  *
- * Changlog
- * 
- * Ver    Date       User      Issue #  Change
- * -----------------------------------------------------------------------------
- * 100    25sep2015  sedgwickc          Initial creation. 
- * 101    08nov2016  sedgwickc          Implement control of all motors. 
- *                                      Remove handling of PWM pins as mraa
- *                                      does not support this atm.
  ***************************************************************************/
 
+// usefulincludes is a collection of common system includes for the lazy
+// This is not necessary for roboticscape projects but here for convenience
+#include <rc_usefulincludes.h> 
+// main roboticscape API header
+#include <roboticscape.h>
 #include "MotorControl.hpp"
 #include <iostream>
 
@@ -25,244 +22,121 @@ namespace rover {
  * CONSTRUCTOR
  * @brief  Instantiates a new motor control class
  *************************************************************************/
-MotorControl::MotorControl(unsigned int *p_left, unsigned int *p_right)
-{
-	if( p_left == NULL || p_right == NULL){
-		cout<<"No pins passed in... \nUsing defaults..."<<endl;
-		set_default_pins();
-    	/* Set PWM and STDBY pins to high otherwise motors sent brake signal */
-		res_left[STDBY_LEFT_INDX] = pins_left[STDBY_LEFT_INDX]->write(HIGH);
-		res_right[STDBY_RIGHT_INDX] = pins_right[STDBY_RIGHT_INDX]->write(HIGH);
-		return;
+MotorControl::MotorControl(){
+	// always initialize cape library first
+	if(rc_initialize()){
+		fprintf(stderr,"ERROR: failed to initialize rc_initialize(), are you root?\n");
+		return -1;
 	}
+
+	// do your own initialization here
+	rc_set_pause_pressed_func(&on_pause_pressed);
+	rc_set_pause_released_func(&on_pause_released);
+
+    // done initializing so set state to RUNNING
+	set_state(rc_state); 
+    rc_enable_motors();
+    set_duty(DEFAULT_DUTY_CYCLE);
 }
 
 /***************************************************************************
  PUBLIC FUNCTIONS
  ***************************************************************************/
 
-int MotorControl::turn_right()
-{
-	stop();
+int MotorControl::turn_right(){
 	cout<<"Turning right..."<<endl;
-	res_left[BIN1_LEFT_INDX] = pins_left[BIN1_LEFT_INDX]->write(HIGH);
-	res_left[AIN2_LEFT_INDX] = pins_left[AIN2_LEFT_INDX]->write(HIGH);
-	res_right[BIN1_RIGHT_INDX] = pins_right[BIN1_RIGHT_INDX]->write(HIGH);
-	res_right[AIN2_RIGHT_INDX] = pins_right[AIN2_RIGHT_INDX]->write(HIGH);
+    rc_set_motor(1, duty);
+    rc_set_motor(2, duty);
+    rc_set_motor(3, -duty);
+    rc_set_motor(4, -duty);
 	return 1;
 }
 
-int MotorControl::turn_left()
-{
+int MotorControl::turn_left(){
 	stop();
 	cout<<"Turning left..."<<endl;
-	res_left[BIN2_LEFT_INDX] = pins_left[BIN2_LEFT_INDX]->write(HIGH);
-	res_left[AIN1_LEFT_INDX] = pins_left[AIN1_LEFT_INDX]->write(HIGH);
-	res_right[BIN2_RIGHT_INDX] = pins_right[BIN2_RIGHT_INDX]->write(HIGH);
-	res_right[AIN1_RIGHT_INDX] = pins_right[AIN1_RIGHT_INDX]->write(HIGH);
+    rc_set_motor(1, -duty);
+    rc_set_motor(2, -duty);
+    rc_set_motor(3, duty);
+    rc_set_motor(4, duty);
 	return 1;
 }
 
-int MotorControl::stop()
-{
+int MotorControl::stop(){
 	cout<<"Stopping all motors..."<<endl;
-	/* minus 2 so that stdby pins are not touched*/
-	for( int i = 0; i < PIN_COUNT; i++ )
-	{
-	    /* Do no set standby pins to low. 
-	     * Standby pins share same index into pin arrays.
-	     */
-	    if( i != STDBY_RIGHT_INDX ){
-			res_left[i] = pins_left[i]->write(LOW);
-			res_right[i] = pins_right[i]->write(LOW);
-		}
-	}
+    rc_set_motor_brake_all();
 	return 1;
 }
 
-int MotorControl::forward()
-{
-	stop();
-	cout<<"Setting motor direction forward..."<<endl;
-	/* check state */
-	/* set pins */
-	res_left[BIN2_LEFT_INDX] = pins_left[BIN2_LEFT_INDX]->write(HIGH);
-	res_left[AIN2_LEFT_INDX] = pins_left[AIN2_LEFT_INDX]->write(HIGH);
-	res_right[BIN2_RIGHT_INDX] = pins_right[BIN2_RIGHT_INDX]->write(HIGH);
-	res_right[AIN2_RIGHT_INDX] = pins_right[AIN2_RIGHT_INDX]->write(HIGH);
+int MotorControl::forward(){
+	cout<<"Moving forward..."<<endl;
+    rc_set_motor_all(duty);
 	return 1;
 }
 
-int MotorControl::backward()
-{
-	stop();
+int MotorControl::backward(){
 	cout<<"Moving backward..."<<endl;
-	res_left[BIN1_LEFT_INDX] = pins_left[BIN1_LEFT_INDX]->write(HIGH);
-	res_left[AIN1_LEFT_INDX] = pins_left[AIN1_LEFT_INDX]->write(HIGH);
-	res_right[BIN1_RIGHT_INDX] = pins_right[BIN1_RIGHT_INDX]->write(HIGH);
-	res_right[AIN1_RIGHT_INDX] = pins_right[AIN1_RIGHT_INDX]->write(HIGH);
+    rc_set_motor_all(-duty);
 	return 1;
 }
 
-int MotorControl::set_speed()
-{
+void MotorControl::set_speed(double pDuty){
+    duty = pDuty;
+}
+
+double MotorControl::get_speed(){
+	return duty;
+}
+
+void set_state(rc_state_t new_state){
+    rc_set_state(new_state);
+}
+
+rc_state_t get_state(){
+    return rc_get_state();
+}
+
+int MotorControl::clean_up(){
+    rc_cleanup();
 	return 1;
 }
 
-int MotorControl::get_speed()
-{
-	return 1;
+MotorControl::~MotorControl(){
+    clean_up();
 }
 
-int MotorControl::set_default_pins()
-{
-	cout<<"Setting default pins..."<<endl;
-	//create left side pins
-	/* bin2 */
-	cout<<"Setting up BIN1_LEFT..."<<endl;
-	pins_left[BIN2_LEFT_INDX] = new mraa::Gpio(BIN2_LEFT_PIN);
-	if (pins_left[BIN2_LEFT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
+/*******************************************************************************
+* void on_pause_released() 
+*	
+* Make the Pause button toggle between paused and running states.
+*******************************************************************************/
+void MotorControl::on_pause_released(){
+	// toggle betewen paused and running modes
+	if(get_state()==RUNNING)		set_state(PAUSED);
+	else if(get_state()==PAUSED)	set_state(RUNNING);
+	return;
+}
 
-	/* bin1 */
-	cout<<"Setting up BIN1_LEFT..."<<endl;
-	pins_left[BIN1_LEFT_INDX] = new mraa::Gpio(BIN1_LEFT_PIN);
-	if (pins_left[BIN1_LEFT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
-
-	/* AIN1 */
-	cout<<"Setting up AIN1_LEFT..."<<endl;
-	pins_left[AIN1_LEFT_INDX] = new mraa::Gpio(AIN1_LEFT_PIN);
-	if (pins_left[AIN1_LEFT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
-
-	/* AIN2 */
-	cout<<"Setting up AIN2_LEFT..."<<endl;
-	pins_left[AIN2_LEFT_INDX] = new mraa::Gpio(AIN2_LEFT_PIN);
-	if (pins_left[AIN2_LEFT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
+/*******************************************************************************
+* void on_pause_pressed() 
+*
+* If the user holds the pause button for 2 seconds, set state to exiting which 
+* triggers the rest of the program to exit cleanly.
+*******************************************************************************/
+void MotorControl::on_pause_pressed(){
+	int i=0;
+	const int samples = 100;	// check for release 100 times in this period
+	const int us_wait = 2000000; // 2 seconds
 	
-	/* STDBY */
-	cout<<"Setting up STDBY_LEFT..."<<endl;
-	pins_left[STDBY_LEFT_INDX] = new mraa::Gpio(STDBY_LEFT_PIN);
-	if (pins_left[STDBY_LEFT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
+	// now keep checking to see if the button is still held down
+	for(i=0;i<samples;i++){
+		rc_usleep(us_wait/samples);
+		if(rc_get_pause_button() == RELEASED) return;
 	}
-
-	/* PWMB */
-//	cout<<"Setting up PWMB_LEFT..."<<endl;
-//    pwm_left[PWMB_LEFT_INDX] = new mraa::Pwm(PWMB_LEFT_PIN);
-//	if (pwm_left[PWMB_LEFT_INDX] == NULL) {
-//	    return mraa::ERROR_UNSPECIFIED;
-//	}
-//    pwm_left[PWMB_LEFT_INDX]->enable(true);
-
-	/* PWMA */
-//	cout<<"Setting up PWMA_LEFT..."<<endl;
-//	pwm_left[PWMA_LEFT_INDX] = new mraa::Pwm(PWMA_LEFT_PIN);
-//	if (pwm_left[PWMA_LEFT_INDX] == NULL) {
-//	    return mraa::ERROR_UNSPECIFIED;
-//	}
-//    pwm_left[PWMA_LEFT_INDX]->enable(true);
-
-	/*create right side pins */
-	/* bin2 */
-	cout<<"Setting up BIN1_RIGHT..."<<endl;
-	pins_right[BIN2_RIGHT_INDX] = new mraa::Gpio(BIN2_RIGHT_PIN);
-	if (pins_right[BIN2_RIGHT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
-
-	/* bin1 */
-	cout<<"Setting up BIN1_RIGHT..."<<endl;
-	pins_right[BIN1_RIGHT_INDX] = new mraa::Gpio(BIN1_RIGHT_PIN);
-	if (pins_right[BIN1_RIGHT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
-
-	/* AIN1 */
-	cout<<"Setting up AIN1_RIGHT..."<<endl;
-	pins_right[AIN1_RIGHT_INDX] = new mraa::Gpio(AIN1_RIGHT_PIN);
-	if (pins_right[AIN1_RIGHT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
-
-	/* AIN2 */
-	cout<<"Setting up AIN2_RIGHT..."<<endl;
-	pins_right[AIN2_RIGHT_INDX] = new mraa::Gpio(AIN2_RIGHT_PIN);
-	if (pins_right[AIN2_RIGHT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
-	
-	/* STDBY */
-	cout<<"Setting up STDBY_RIGHT..."<<endl;
-	pins_right[STDBY_RIGHT_INDX] = new mraa::Gpio(STDBY_RIGHT_PIN);
-	if (pins_right[STDBY_RIGHT_INDX] == NULL) {
-	    return mraa::ERROR_UNSPECIFIED;
-	}
-
-	/* PWMB */
-//	cout<<"Setting up PWMB_RIGHT..."<<endl;
-//	pwm_right[PWMB_RIGHT_INDX] = new mraa::Pwm(PWMB_RIGHT_PIN);
-//	if (pwm_right[PWMB_RIGHT_INDX] == NULL) {
-//	    return mraa::ERROR_UNSPECIFIED;
-//	}
-//    pwm_right[PWMB_RIGHT_INDX]->enable(true);
-
-	/* PWMA */
-//	cout<<"Setting up PWMA_RIGHT..."<<endl;
-//	pwm_right[PWMA_RIGHT_INDX] = new mraa::Pwm(PWMA_RIGHT_PIN);
-//	if (pwm_right[PWMA_RIGHT_INDX] == NULL) {
-//	    return mraa::ERROR_UNSPECIFIED;
-//	}
-//    pwm_right[PWMA_RIGHT_INDX]->enable(true);
-
-	//set pin direction to output
-	for( int i = 0; i < PIN_COUNT; i++ ){
-	    /* set left pins direction */	
-		res_left[i] = pins_left[i]->dir(mraa::DIR_OUT);
-		if(res_left[i] != mraa::SUCCESS){
-			mraa::printError(res_left[i]);
-			return 1;
-		}
-		/* set right pins direction */
-		res_right[i] = pins_right[i]->dir(mraa::DIR_OUT);
-		if(res_right[i] != mraa::SUCCESS){
-			mraa::printError(res_right[i]);
-			return 1;
-		}
-	}
-
-	/* set up pwm duty cycle */
-//	pwm_right[PWMA_RIGHT_INDX]->write(DUTY_CYCLE);
-//	pwm_right[PWMB_RIGHT_INDX]->write(DUTY_CYCLE);
-//	pwm_left[PWMA_LEFT_INDX]->write(DUTY_CYCLE);
-//	pwm_left[PWMB_LEFT_INDX]->write(DUTY_CYCLE);
-
-	return 1;
+	printf("long press detected, shutting down\n");
+	set_state(EXITING);
+	return;
 }
-
-int MotorControl::clean_up()
-{
-	for(int i = 0; i < PIN_COUNT; i++){
-		delete pins_left[i];
-		delete pins_right[i];
-	}
-	/*
-    delete pwm_right[PWMA_RIGHT_INDX];
-    delete pwm_right[PWMB_RIGHT_INDX];
-    delete pwm_left[PWMA_LEFT_INDX];
-    delete pwm_left[PWMB_LEFT_INDX];
-    */
-
-	return 1;
-}
-
-MotorControl::~MotorControl(){}
 
 }; // rover namespace
 

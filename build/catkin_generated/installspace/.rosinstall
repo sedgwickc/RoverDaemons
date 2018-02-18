@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/rover/RoverDaemons/install/setup.sh
