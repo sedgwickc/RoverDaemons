@@ -1,23 +1,22 @@
 Rover Control Project
 =====================
-Charles Sedgwick
+(Charles Sedgwick)
 [charlessedgwick.com]
 
 RoverDaemons exits as a test bed for learning how to implement control
 software for autonomous land based vehicles. The core computing platforms
-supported are the the BeagleBone Blue. The BeagleBone Black and Green are
-supported via the BeagleBoneBlack branch. 
+supported are the BeagleBone Blue. The BeagleBone Black and Green are
+supported via the BeagleBoneBlack branch. An alternative version that uses ACH
+instead of ROS is supported via the feature-ach branch.
 
 Dependancies
 ------------
-All branches:
-
-
 @master:
  - robotics_cape_installer:
    https://github.com/StrawsonDesign/Robotics_Cape_Installer
  - Latest Debian Stretch IoT image for BeagleBone Blue
  - OpenCV 3.2
+ - ROS kinetic
 
 @feature-ach:
  - ACH: https://github.com/golems/ach
@@ -32,16 +31,17 @@ All branches:
 
 Compilation
 -----------
-
-@master:
- - run install_opencv.sh
-
-@feature-ach:
 1. clone directory
     ```
     https://github.com/sedgwickc/RoverDaemons.git
     ```
 2. navigate to newly created RoverDaemons directory
+
+@master:
+3. source your ROS environment
+4. run ```catkin_make```
+
+@feature-ach:
 3. run make
     ```
     make all
@@ -51,6 +51,8 @@ Startup
 -------
 
 @master:
+1. start roscore
+2. Nodes built in step 4 should be in devel/lib/. Start them via roslaunch.
 
 
 @feature-ach:
@@ -98,4 +100,3 @@ Troubleshooting
         ```
         /var/log/rover_logs/nav_log.txt
         ```
-
