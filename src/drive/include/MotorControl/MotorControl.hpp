@@ -6,6 +6,12 @@
  ***************************************************************************/
 
 #include <stdint.h>
+extern "C"
+{  
+#include "roboticscape.h"
+}
+#include <std_msgs/Float32.h>
+#include <std_msgs/Int32.h>
 
 namespace rover {
 
@@ -18,25 +24,22 @@ public:
 	MotorControl();
 
 	int turn_left();
-
 	int turn_right();
-
 	int stop();
-
 	int forward();
-
 	int backward();
-
-	int set_speed(double pDuty);
-
+	void set_speed(double pDuty);
 	double get_speed();
+	void set_diff(int pDiff);
+	int get_diff();
     void set_state(rc_state_t new_state);
     rc_state_t get_state();
 
 	int clean_up();
-    void MotorControl::on_pause_released();
-    void MotorControl::on_pause_pressed();
-
+    void on_pause_released();
+    void on_pause_pressed();
+    void speedCallback(const std_msgs::Float32::ConstPtr& msg);
+    void diffCallback(const std_msgs::Int32::ConstPtr& msg);
     virtual ~MotorControl();
 private:
 	double duty;
@@ -44,4 +47,3 @@ private:
 };
 
 } // rover namespace
-#endif
