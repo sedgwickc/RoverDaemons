@@ -13,6 +13,9 @@ extern "C"
 #include "roboticscape.h"
 }
 #include <iostream>
+#include <ros/ros.h>
+#include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Vector3.h>
 
 using namespace std;
 
@@ -36,7 +39,7 @@ MotorControl::MotorControl(){
     // done initializing so set state to RUNNING
 	set_state(RUNNING); 
     rc_enable_motors();
-    set_speed(DEFAULT_DUTY_CYCLE);
+    set_speed(DEFAULT_SPEED_X);
 }
 
 /***************************************************************************
@@ -44,18 +47,18 @@ MotorControl::MotorControl(){
  ***************************************************************************/
 
 int MotorControl::turn_right(){
-    rc_set_motor(1, duty);
-    rc_set_motor(2, duty);
-    rc_set_motor(3, -duty);
-    rc_set_motor(4, -duty);
+    rc_set_motor(1, linear.x);
+    rc_set_motor(2, linear.x);
+    rc_set_motor(3, -linear.x);
+    rc_set_motor(4, -linear.x);
 	return 1;
 }
 
 int MotorControl::turn_left(){
-    rc_set_motor(1, -duty);
-    rc_set_motor(2, -duty);
-    rc_set_motor(3, duty);
-    rc_set_motor(4, duty);
+    rc_set_motor(1, -linear.x);
+    rc_set_motor(2, -linear.x);
+    rc_set_motor(3, linear.x);
+    rc_set_motor(4, linear.x);
 	return 1;
 }
 
@@ -65,31 +68,30 @@ int MotorControl::stop(){
 }
 
 int MotorControl::forward(){
-    rc_set_motor_all(duty);
+    rc_set_motor_all(linear.x);
 	return 1;
 }
 
 int MotorControl::backward(){
-    rc_set_motor_all(-duty);
+    rc_set_motor_all(-linear.x);
 	return 1;
 }
 
-void MotorControl::set_speed(double pDuty){
-    duty = pDuty;
+void MotorControl::set_speed(geometry_msgs::Vector3 pLinear){
+    linear = pLinear;
 }
 
-double MotorControl::get_speed(){
-	return duty;
+geometry_msgs::Vector3 MotorControl::get_speed(){
+	return linear;
 }
 
-void MotorControl::set_diff(int pDiff){
-    diff = pDiff;
+void MotorControl::set_angular(geometry_msgs::Vector3 pAngular){
+    angular = pAngular;
 }
 
-int MotorControl::get_diff(){
-	return diff;
+geometry_msgs::Vector3 MotorControl::get_angular(){
+	return angular;
 }
-
 
 void MotorControl::set_state(rc_state_t new_state){
     rc_set_state(new_state);
@@ -142,38 +144,10 @@ void MotorControl::on_pause_pressed(){
 	return;
 }
 
-void MotorControl::speedCallback(const std_msgs::Float32::ConstPtr& msg){
-    /* if they differ from current values then set speed and diff to new */
-    if( msg->data != duty ){
-        duty = msg->data;
-    }
+void MotorControl::callback(const geometry_msgs::Twist::ConstPtr& msg){
+    linear = msg->linear;
+    angular = msg->angular;
     /* publish new speed to /drive_status */
-}
-
-void MotorControl::diffCallback(const std_msgs::Int32::ConstPtr& msg){
-    /* if they differ from current values then set speed and diff to new */
-    if( msg->data != diff ){
-        diff = msg->data;
-    }
-    if( diff < 0 ){
-        turn_left();
-    }
-    if( diff == 0 ){
-        forward();
-    }
-    if( diff == 1 ){
-        turn_right();
-    }
-    if( diff == 2 ){
-        backward();
-    }
-    if( diff == 3 ){
-        stop();
-    }
-    if( diff == 9 ){
-        clean_up();
-    }
-    /* publish new diff to /drive_status */
 }
 
 }; // rover namespace

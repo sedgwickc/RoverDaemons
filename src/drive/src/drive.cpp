@@ -8,7 +8,6 @@ extern "C"
 {  
 #include "roboticscape.h"
 }
-#include <std_msgs/Float32.h>
 #include <ros/ros.h>
 
 using namespace std;
@@ -24,10 +23,8 @@ int main( int argc, char** argv ) {
     ros::NodeHandle n;
 
     /* subscribe to /drive_speed and /drive_diff */
-    ros::Subscriber speedSub = n.subscribe("drive_speed", 1000, 
-        &MotorControl::speedCallback, motor_control);
-    ros::Subscriber diffSub = n.subscribe("drive_direction", 1000, 
-        &MotorControl::diffCallback, motor_control);
+    ros::Subscriber speedSub = n.subscribe("drive_vel", 5, 
+        &MotorControl::callback, motor_control);
 
     ros::spin();
 

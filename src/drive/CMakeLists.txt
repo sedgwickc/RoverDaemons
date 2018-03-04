@@ -4,6 +4,7 @@ project(drive)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  geometry_msgs
 )
 
 catkin_package(

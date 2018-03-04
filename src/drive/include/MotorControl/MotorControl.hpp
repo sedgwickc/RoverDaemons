@@ -10,13 +10,13 @@ extern "C"
 {  
 #include "roboticscape.h"
 }
-#include <std_msgs/Float32.h>
-#include <std_msgs/Int32.h>
+#include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Vector3.h>
 
 namespace rover {
 
 /* Defines */
-#define DEFAULT_DUTY_CYCLE 0.5
+#define DEFAULT_SPEED_X 0.5
 
 class MotorControl
 {
@@ -28,22 +28,22 @@ public:
 	int stop();
 	int forward();
 	int backward();
-	void set_speed(double pDuty);
-	double get_speed();
-	void set_diff(int pDiff);
-	int get_diff();
+	void set_speed(geometry_msgs::Vector3 pLinear);
+	geometry_msgs::Vector3 get_speed();
+	void set_angular(geometry_msgs::Vector3 pAngular);
+	geometry_msgs::Vector3 get_angular();
     void set_state(rc_state_t new_state);
     rc_state_t get_state();
 
 	int clean_up();
     void on_pause_released();
     void on_pause_pressed();
-    void speedCallback(const std_msgs::Float32::ConstPtr& msg);
-    void diffCallback(const std_msgs::Int32::ConstPtr& msg);
+    void callback(const geometry_msgs::Twist::ConstPtr& msg);
     virtual ~MotorControl();
 private:
-	double duty;
-    int diff;
+
+    geometry_msgs::Vector3 linear;
+    geometry_msgs::Vector3 angular;
 };
 
 } // rover namespace
