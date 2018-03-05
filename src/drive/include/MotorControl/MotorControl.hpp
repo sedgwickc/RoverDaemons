@@ -12,6 +12,7 @@ extern "C"
 }
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Vector3.h>
+#include <actionlib_msgs/GoalStatus.h>
 
 namespace rover {
 
@@ -34,11 +35,13 @@ public:
 	geometry_msgs::Vector3 get_angular();
     void set_state(rc_state_t new_state);
     rc_state_t get_state();
+    void publish_state();
 
 	int clean_up();
     void on_pause_released();
     void on_pause_pressed();
     void callback(const geometry_msgs::Twist::ConstPtr& msg);
+    void status_callback(const actionlib_msgs::GoalStatus::ConstPtr& msg);
     virtual ~MotorControl();
 private:
 

@@ -16,6 +16,7 @@ extern "C"
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Vector3.h>
+#include <actionlib_msgs/GoalStatus.h>
 
 using namespace std;
 
@@ -39,7 +40,7 @@ MotorControl::MotorControl(){
     // done initializing so set state to RUNNING
 	set_state(RUNNING); 
     rc_enable_motors();
-    set_speed(DEFAULT_SPEED_X);
+    //set_speed(DEFAULT_SPEED_X);
 }
 
 /***************************************************************************
@@ -101,6 +102,10 @@ rc_state_t MotorControl::get_state(){
     return rc_get_state();
 }
 
+void MotorControl::publish_state(){
+
+}
+
 int MotorControl::clean_up(){
     rc_set_state(EXITING);
     rc_cleanup();
@@ -144,10 +149,15 @@ void MotorControl::on_pause_pressed(){
 	return;
 }
 
+void MotorControl::status_callback(const actionlib_msgs::GoalStatus::ConstPtr& msg){
+    if( msg->status == msg->ABORTED ){
+        clean_up();
+    }
+}
+
 void MotorControl::callback(const geometry_msgs::Twist::ConstPtr& msg){
     linear = msg->linear;
     angular = msg->angular;
-    /* publish new speed to /drive_status */
 }
 
 }; // rover namespace
