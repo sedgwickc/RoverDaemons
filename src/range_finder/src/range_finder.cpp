@@ -6,12 +6,13 @@
  */
 
 extern "C"
-{
-#include <rc_usefulincludes.h> 
+{  
+#include "roboticscape.h"
 }
 // main roboticscape API header
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
+#include <actionlib_msgs/GoalStatus.h>
 
 #define CLOCK 1
 #define ANTICLOCK -1
@@ -19,13 +20,12 @@ extern "C"
 #define FREQ_DEFAULT 90
 
 using namespace std;
-using namespace rover;
 
 /*******************************************************************************
 * int main() 
 *
 *******************************************************************************/
-int main(){
+int main(int argc, char** argv){
 
     uint16_t distance = 0;
 
@@ -56,9 +56,9 @@ int main(){
     ros::NodeHandle n;
 
     /* advertise the topic "range_laser" and buffer up to 10 messaged */
-    ros::Publisher range_pub = n.advertise<common_msgs::LaserScan>("range_laser", 10);
+    ros::Publisher range_pub = n.advertise<sensor_msgs::LaserScan>("range_laser", 10);
 
-    /* loop at FREQ_DEFAULT Hz to match ranger finder looping */
+    /* loop at FREQ_DEFAULT Hz */
     ros::Rate loop_rate(FREQ_DEFAULT);
 
     float position = 0.0;
@@ -83,7 +83,7 @@ int main(){
             break;
         }
         // sleep roughly enough to maintain frequency_hz
-        rc_usleep(1000000/FREQ_DEFAULT);
+//        rc_usleep(1000000/FREQ_DEFAULT);
 
         distance = 0;
         if(rc_i2c_write_byte(1, 0x00, 0x04)<0){
@@ -92,9 +92,9 @@ int main(){
         } else {
             rc_i2c_read_word(1, 0x8f, &distance);
             /* publish servo position and distance */
-            common_msgs::LaserScan msg;
+            sensor_msgs::LaserScan msg;
             msg.header.stamp = ros::Time::now();
-            msg.angle_min = positon;
+            msg.angle_min = position;
             msg.range_min = distance;
             range_pub.publish(msg);
         }
