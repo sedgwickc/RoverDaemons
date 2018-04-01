@@ -1,8 +1,8 @@
 /*
  * Range_Finder package
  * 
- * This package retrieves and published distance data from a lidar lite v 
- * mounted on a servo which sweeps 180 degress continuously. 
+ * This package retrieves and publishes distance data from a lidar lite v2 
+ * mounted on a servo which sweeps from FREQ_DEFAULT to -FREQ_DEFAULT.  
  */
 
 extern "C"
@@ -16,7 +16,7 @@ extern "C"
 
 #define CLOCK 1
 #define ANTICLOCK -1
-#define SERVO_MAX 1.5
+#define SERVO_MAX 1.35
 #define FREQ_DEFAULT 90
 
 using namespace std;
@@ -27,7 +27,17 @@ using namespace std;
 *******************************************************************************/
 int main(int argc, char** argv){
 
+    /* the distance value read from the sensor */
     uint16_t distance = 0;
+
+    /* position of the servo */
+    float position = 0.0;
+
+    /* angle of the servo at a current position */
+    float angle = 0.0;
+
+    /* the direction the servo is currently sweeping */ 
+    int8_t swp_drctn = CLOCK;
 
 	// always initialize cape library first
 	if(rc_initialize()){
@@ -55,25 +65,29 @@ int main(int argc, char** argv){
 	
     ros::NodeHandle n;
 
-    /* advertise the topic "range_laser" and buffer up to 10 messaged */
+    /* advertise the topic "range_laser" and buffer up to 10 messages */
     ros::Publisher range_pub = n.advertise<sensor_msgs::LaserScan>("range_laser", 10);
 
     /* loop at FREQ_DEFAULT Hz */
     ros::Rate loop_rate(FREQ_DEFAULT);
 
-    float position = 0.0;
-    int8_t swp_drctn = CLOCK;
     if( rc_send_servo_pulse_normalized(7, position) < 0){
         fprintf(stderr,"ERROR: failed to move to servo to position %f\n", position);
     }
     rc_set_state(RUNNING);
     while( rc_get_state() == RUNNING && ros::ok()){
-            position += swp_drctn * SERVO_MAX / FREQ_DEFAULT;
-        if( position > SERVO_MAX){
+        position += swp_drctn * SERVO_MAX / FREQ_DEFAULT;
+        if(swp_drctn == CLOCK ){
+            angle++;
+        }else{
+            angle--;
+        }
+
+        if( position > SERVO_MAX || angle == FREQ_DEFAULT){
             position = SERVO_MAX;
             swp_drctn = ANTICLOCK;
         }
-        if (position < -SERVO_MAX){
+        if (position < -SERVO_MAX || angle == -FREQ_DEFAULT){
             position = -SERVO_MAX;
             swp_drctn = CLOCK;
         }
@@ -82,8 +96,6 @@ int main(int argc, char** argv){
             fprintf(stderr,"ERROR: failed to move to servo to position %f\n", position);
             break;
         }
-        // sleep roughly enough to maintain frequency_hz
-//        rc_usleep(1000000/FREQ_DEFAULT);
 
         distance = 0;
         if(rc_i2c_write_byte(1, 0x00, 0x04)<0){
@@ -94,7 +106,7 @@ int main(int argc, char** argv){
             /* publish servo position and distance */
             sensor_msgs::LaserScan msg;
             msg.header.stamp = ros::Time::now();
-            msg.angle_min = position;
+            msg.angle_min = angle;
             msg.range_min = distance;
             range_pub.publish(msg);
         }
