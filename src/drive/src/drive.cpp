@@ -23,7 +23,7 @@ int main( int argc, char** argv ) {
     ros::NodeHandle n;
 
     /* subscribe to /drive_speed and /drive_diff */
-    ros::Subscriber speedSub = n.subscribe("drive_vel", 5, 
+    ros::Subscriber speedSub = n.subscribe("cmd_vel", 5, 
         &MotorControl::callback, motor_control);
 
     ros::spin();
