@@ -155,9 +155,39 @@ void MotorControl::status_callback(const actionlib_msgs::GoalStatus::ConstPtr& m
     }
 }
 
+/**
+ * This call back will convert the linear components of the message read from
+ * the topic in to movement of the rover. The following diagram illustrates how
+ * moving a joystick will move the rover:
+ * 
+ *            XFFFFFX    F: forward
+ *            LXFFFXR    R: right
+ *            LLXFXRR    L: left
+ *            LLLXRRR    B: backward
+ *            LLXBXRR    X: no movement
+ *            LXBBBXR
+ *            XBBBBBX
+ */
 void MotorControl::callback(const geometry_msgs::Twist::ConstPtr& msg){
+    /* forward: +linear.x; backward: -linear.x; left: angular.z; right:
+     * -anguler.z */
     linear = msg->linear;
     angular = msg->angular;
+
+    /* if the linear component is greater then it will be used to set the
+     * direction */
+    if(abs(linear.x) > abs(angular.z)){
+        rc_set_motor_all(linear.x);
+    } else if(abs(linear.x) < abs( angular.z)){
+        /* if the angular component is greater then it will be used to determine
+         * the direction */
+        rc_set_motor(1, -angular.z);
+        rc_set_motor(2, -angular.z);
+        rc_set_motor(3, angular.z);
+        rc_set_motor(4, angular.z);
+    } else {
+        /* do not move */
+    }
 }
 
 }; // rover namespace
